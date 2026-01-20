@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfer Rezervasyonu</title>
+</head>
+
+<body
+    style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 20px 0;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0"
+                    style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <tr>
+                        <td
+                            style="background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
+                            <h1 style="color: #ffffff; margin: 0; font-size: 28px;">🚐 Transfer Rezervasyonu</h1>
+                        </td>
+                    </tr>
+
+                    <!-- Body -->
+                    <tr>
+                        <td style="padding: 40px 30px;">
+                            <p style="font-size: 16px; color: #374151; margin: 0 0 25px;">Sayın
+                                <strong>{{customerName}}</strong>,</p>
+
+                            <p style="font-size: 16px; color: #374151; margin: 0 0 25px;">Transfer rezervasyonunuz
+                                onaylanmıştır.</p>
+
+                            <!-- Route Card -->
+                            <table width="100%" cellpadding="0" cellspacing="0"
+                                style="background-color: #f0fdfa; border-radius: 12px; border: 1px solid #99f6e4; margin: 0 0 25px;">
+                                <tr>
+                                    <td style="padding: 25px;">
+                                        <table width="100%" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td width="40%" style="text-align: center;">
+                                                    <p style="color: #0d9488; font-size: 12px; margin: 0 0 5px;">ALIŞ
+                                                        NOKTASI</p>
+                                                    <p
+                                                        style="color: #134e4a; font-size: 16px; font-weight: 600; margin: 0;">
+                                                        {{pickupLocation}}</p>
+                                                </td>
+                                                <td width="20%" style="text-align: center;">
+                                                    <span style="font-size: 24px; color: #14b8a6;">→</span>
+                                                </td>
+                                                <td width="40%" style="text-align: center;">
+                                                    <p style="color: #0d9488; font-size: 12px; margin: 0 0 5px;">
+                                                        BIRAKILACAK</p>
+                                                    <p
+                                                        style="color: #134e4a; font-size: 16px; font-weight: 600; margin: 0;">
+                                                        {{dropoffLocation}}</p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Details -->
+                            <table width="100%" cellpadding="0" cellspacing="0"
+                                style="background-color: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <table width="100%" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0;">
+                                                    <span style="color: #64748b; font-size: 14px;">📅 Tarih:</span>
+                                                    <span
+                                                        style="color: #1e293b; font-size: 14px; font-weight: 600; float: right;">{{formatDate
+                                                        transferDate}}</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0;">
+                                                    <span style="color: #64748b; font-size: 14px;">🕐 Saat:</span>
+                                                    <span
+                                                        style="color: #1e293b; font-size: 14px; font-weight: 600; float: right;">{{transferTime}}</span>
+                                                </td>
+                                            </tr>
+                                            {{#if vehicleType}}
+                                            <tr>
+                                                <td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0;">
+                                                    <span style="color: #64748b; font-size: 14px;">🚗 Araç:</span>
+                                                    <span
+                                                        style="color: #1e293b; font-size: 14px; font-weight: 600; float: right;">{{vehicleType}}</span>
+                                                </td>
+                                            </tr>
+                                            {{/if}}
+                                            {{#if passengerCount}}
+                                            <tr>
+                                                <td style="padding: 8px 0;">
+                                                    <span style="color: #64748b; font-size: 14px;">👥 Yolcu:</span>
+                                                    <span
+                                                        style="color: #1e293b; font-size: 14px; font-weight: 600; float: right;">{{passengerCount}}
+                                                        kişi</span>
+                                                </td>
+                                            </tr>
+                                            {{/if}}
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            {{#if driverPhone}}
+                            <table width="100%" cellpadding="0" cellspacing="0" style="margin: 20px 0;">
+                                <tr>
+                                    <td
+                                        style="padding: 15px; background-color: #eff6ff; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                                        <p style="color: #1e40af; font-size: 14px; margin: 0;">
+                                            📞 <strong>Şoför İletişim:</strong> {{driverPhone}}
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                            {{/if}}
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td
+                            style="background-color: #f8fafc; padding: 25px 30px; border-radius: 0 0 12px 12px; text-align: center; border-top: 1px solid #e2e8f0;">
+                            <p style="color: #64748b; font-size: 14px; margin: 0;">Saygılarımızla,<br><strong
+                                    style="color: #1e293b;">Calibre Tour Ekibi</strong></p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

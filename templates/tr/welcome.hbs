@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoş Geldiniz</title>
+</head>
+
+<body
+    style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 20px 0;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0"
+                    style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <tr>
+                        <td
+                            style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 40px; border-radius: 12px 12px 0 0; text-align: center;">
+                            <h1 style="color: #ffffff; margin: 0; font-size: 32px;">🎉 Hoş Geldiniz!</h1>
+                        </td>
+                    </tr>
+
+                    <!-- Body -->
+                    <tr>
+                        <td style="padding: 40px 30px;">
+                            <p style="font-size: 18px; color: #374151; margin: 0 0 20px;">Sayın
+                                <strong>{{customerName}}</strong>,</p>
+
+                            <p style="font-size: 16px; color: #374151; margin: 0 0 20px;">Calibre Tour ailesine
+                                katıldığınız için teşekkür ederiz!</p>
+
+                            <p style="font-size: 16px; color: #374151; margin: 0 0 30px;">Hesabınız başarıyla
+                                oluşturulmuştur. Artık aşağıdaki hizmetlerden faydalanabilirsiniz:</p>
+
+                            <!-- Features -->
+                            <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
+                                <tr>
+                                    <td
+                                        style="padding: 12px 15px; background-color: #f0fdf4; border-radius: 8px; margin-bottom: 10px;">
+                                        <span style="font-size: 20px;">✈️</span>
+                                        <span style="color: #166534; font-size: 15px; margin-left: 10px;">Uçak bileti
+                                            rezervasyonları</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="height: 8px;"></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px 15px; background-color: #eff6ff; border-radius: 8px;">
+                                        <span style="font-size: 20px;">🏨</span>
+                                        <span style="color: #1e40af; font-size: 15px; margin-left: 10px;">Otel
+                                            rezervasyonları</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="height: 8px;"></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px 15px; background-color: #fef3c7; border-radius: 8px;">
+                                        <span style="font-size: 20px;">📦</span>
+                                        <span style="color: #92400e; font-size: 15px; margin-left: 10px;">Tur
+                                            paketleri</span>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            {{#if loginUrl}}
+                            <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
+                                <tr>
+                                    <td align="center">
+                                        <a href="{{loginUrl}}"
+                                            style="display: inline-block; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: #ffffff; padding: 14px 40px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">Hesabıma
+                                            Git</a>
+                                    </td>
+                                </tr>
+                            </table>
+                            {{/if}}
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td
+                            style="background-color: #f8fafc; padding: 25px 30px; border-radius: 0 0 12px 12px; text-align: center; border-top: 1px solid #e2e8f0;">
+                            <p style="color: #64748b; font-size: 14px; margin: 0;">Saygılarımızla,<br><strong
+                                    style="color: #1e293b;">Calibre Tour Ekibi</strong></p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
