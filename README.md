@@ -152,9 +152,7 @@ templates/
 ├── transfer-reservation.hbs
 ├── welcome.hbs
 ├── password-reset.hbs
-├── partials/
-├── preview/
-└── raw/
+└── partials/
 
 locales/
 ├── tr.json
