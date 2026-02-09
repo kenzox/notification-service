@@ -41,12 +41,17 @@ npm run dev
 npm run build
 npm start
 
+# (Opsiyonel) sık yapılan yazım hatası için alias
+npm run sart
+
 # Template ve i18n doğrulama
 npm run check:templates
 
 # Production readiness test paketi
 npm run test:prod
 ```
+
+`npm start` komutu derlenmiş çıktıdan çalışır. Bu yüzden önce `npm run build` çalıştırılmalıdır.
 
 ## API Endpoints
 
@@ -189,8 +194,18 @@ locales/
 ## Docker
 
 ```bash
+# İlk kurulum / yeniden build
 cd infrastructure
-docker-compose up -d
+docker compose up --build -d
+
+# Servis durumunu kontrol et
+docker compose ps
+
+# Logları izle
+docker compose logs -f notification-service
+
+# Servisi durdur
+docker compose down
 ```
 
 ## Swagger Dokümantasyonu

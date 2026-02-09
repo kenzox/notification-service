@@ -2,10 +2,11 @@
   "name": "notification-service",
   "version": "2.0.0",
   "description": "Standalone email notification service for Calibre Tour",
-  "main": "dist/apps/api/main.js",
+  "main": "dist/apps/api/src/main.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/apps/api/main.js",
+    "start": "node dist/apps/api/src/main.js",
+    "sart": "npm run start",
     "dev": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register apps/api/src/main.ts",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"**/*.ts\"",

@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { Locale, SUPPORTED_LOCALES, I18nMeta } from '@shared/types';
+import { Locale, SUPPORTED_LOCALES, I18nMeta } from '../../../../libs/shared/src/types';
 import { logger } from '../utils/logger';
 
 interface LocaleMeta {
