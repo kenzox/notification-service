@@ -11,6 +11,7 @@ export function requestLogger(
     res.on('finish', () => {
         const duration = Date.now() - startTime;
         logger.info({
+            requestId: req.requestId,
             method: req.method,
             path: req.path,
             statusCode: res.statusCode,

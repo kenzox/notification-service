@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="{{__meta.locale}}" dir="{{__meta.direction}}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{t "hotelReservation.title"}}</title>
+</head>
+
+<body
+    style="margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: 14.3px; line-height: 24px; vertical-align: middle; background-color: #FFFFFF; direction: {{__meta.direction}}; text-align: {{__meta.align}};">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #FFFFFF;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #FFFFFF;">
+                    <!-- 1. Header (gradient, logo, confirmation + PIN CODE) -->
+                    <tr>
+                        <td style="background: linear-gradient(to right, #FFA166, #FF6200); padding: 20px 30px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td style="text-align: {{__meta.align}};">
+                                        <img src="{{__meta.logoUrl}}" alt="CALIBRE TOUR" width="120"
+                                            style="width: 120px; display: block;">
+                                    </td>
+                                    <td style="text-align: {{__meta.oppositeAlign}};">
+                                        <span style="color: #FFFFFF; font-size: 11px; opacity: 0.9;">Calibre
+                                            Confirmation: <strong
+                                                style="font-weight: 700;">{{confirmNumber}}</strong></span>
+                                        <br>
+                                        <span style="color: #FFFFFF; font-size: 11px; opacity: 0.9;">PIN KODU: <strong
+                                                style="font-weight: 700;">{{pinCode}}</strong></span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Body Content -->
+                    <tr>
+                        <td style="padding: 30px 30px 40px;">
+                            <!-- 2. Greeting -->
+                            <h2
+                                style="font-size: 20px; color: #333333; font-weight: 700; margin: 0 0 20px; line-height: 1.3;">
+                                {{t "hotelReservation.greeting" guestName=customerName hotelCity=hotelName}}
+                                {{t "hotelReservation.confirmed"}}
+                            </h2>
+
+                            <!-- 3. Checklist -->
+                            <table width="100%" cellpadding="0" cellspacing="0" style="margin: 0 0 25px;">
+                                <tr>
+                                    <td style="padding: 5px 0; vertical-align: top; width: 24px;">
+                                        <span
+                                            style="color: #34A853; font-size: 16px; font-weight: bold;">&#10003;</span>
+                                    </td>
+                                    <td style="padding: 5px 0 5px 8px; font-size: 14px; color: #333333;">
+                                        {{t "hotelReservation.checklist1" hotelName=hotelName checkInDate=(formatDate
+                                        checkInDate)}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 5px 0; vertical-align: top; width: 24px;">
+                                        <span
+                                            style="color: #34A853; font-size: 16px; font-weight: bold;">&#10003;</span>
+                                    </td>
+                                    <td style="padding: 5px 0 5px 8px; font-size: 14px; color: #333333;">
+                                        {{t "hotelReservation.checklist2"}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 5px 0; vertical-align: top; width: 24px;">
+                                        <span style="color: #777777; font-size: 14px;">&#128274;</span>
+                                    </td>
+                                    <td style="padding: 5px 0 5px 8px; font-size: 14px; color: #666666;">
+                                        {{t "hotelReservation.checklist3"}}
+                                    </td>
+                                </tr>
+                                {{#if freeCancellationUntil}}
+                                <tr>
+                                    <td style="padding: 5px 0; vertical-align: top; width: 24px;">
+                                        <span
+                                            style="color: #34A853; font-size: 16px; font-weight: bold;">&#10003;</span>
+                                    </td>
+                                    <td style="padding: 5px 0 5px 8px; font-size: 14px; color: #333333;">
+                                        {{t "hotelReservation.checklist4" freeCancellationDate=freeCancellationUntil
+                                        timezone=(or timezone "GMT+3")}}
+                                    </td>
+                                </tr>
+                                {{/if}}
+                            </table>
+
+                            <!-- 4. Hotel Name Header Area -->
+                            <h3 style="font-size: 18px; color: #333333; font-weight: 800; margin: 0 0 5px;">
+                                [{{hotelName}}]</h3>
+                            <p style="font-size: 14px; color: #333333; font-weight: 700; margin: 0 0 20px;">{{t
+                                "hotelReservation.reservationDetails"}}</p>
+
+                            <!-- 5. Reservation Details Table -->
+                            <table width="100%" cellpadding="0" cellspacing="0"
+                                style="border: 1px solid #EEEEEE; border-collapse: collapse;">
+                                <tr>
+                                    <td
+                                        style="padding: 15px; border-bottom: 1px solid #EEEEEE; width: 35%; color: #777777; font-size: 13px;">
+                                        {{t "hotelReservation.calibreConfirmation"}}</td>
+                                    <td
+                                        style="padding: 15px; border-bottom: 1px solid #EEEEEE; color: #FF6200; font-size: 13px; font-weight: 700;">
+                                        {{confirmNumber}}</td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="padding: 15px; border-bottom: 1px solid #EEEEEE; color: #777777; font-size: 13px;">
+                                        {{t "hotelReservation.checkInDate"}}</td>
+                                    <td
+                                        style="padding: 15px; border-bottom: 1px solid #EEEEEE; color: #333333; font-size: 13px;">
+                                        <strong>{{formatDate checkInDate}}</strong> ({{checkInTime}})
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="padding: 15px; border-bottom: 1px solid #EEEEEE; color: #777777; font-size: 13px;">
+                                        {{t "hotelReservation.checkOutDate"}}</td>
+                                    <td
+                                        style="padding: 15px; border-bottom: 1px solid #EEEEEE; color: #333333; font-size: 13px;">
+                                        <strong>{{formatDate checkOutDate}}</strong> ({{checkOutTime}})
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="padding: 15px; border-bottom: 1px solid #EEEEEE; color: #777777; font-size: 13px;">
+                                        {{t "hotelReservation.reservation"}}</td>
+                                    <td
+                                        style="padding: 15px; border-bottom: 1px solid #EEEEEE; color: #333333; font-size: 13px;">
+                                        <div>{{roomCount}} x {{roomType}}</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="padding: 15px; border-bottom: 1px solid #EEEEEE; color: #777777; font-size: 13px; vertical-align: top;">
+                                        {{t "hotelReservation.bookedFor"}}</td>
+                                    <td
+                                        style="padding: 15px; border-bottom: 1px solid #EEEEEE; color: #333333; font-size: 13px;">
+                                        <table width="100%" cellpadding="0" cellspacing="0">
+                                            {{#each rooms}}
+                                            <tr>
+                                                <td
+                                                    style="padding: 5px 0; border-bottom: {{#unless @last}}1px solid #F3F4F6{{else}}none{{/unless}};">
+                                                    <div style="font-weight: 700; color: #FF6200; margin-bottom: 4px;">
+                                                        {{t "hotelReservation.roomLabel"}} {{add @index 1}}</div>
+                                                    <div style="margin-bottom: 2px;">
+                                                        <strong>{{or type roomTypeName}}</strong>
+                                                    </div>
+                                                    <div style="font-size: 12px; color: #666666;">
+                                                        {{t "hotelReservation.guestName"}}: {{guestName}} |
+                                                        {{t "hotelReservation.mealPlan"}}: {{mealPlan}} |
+                                                        {{t "hotelReservation.boardType"}}: {{pensionType}}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {{/each}}
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="padding: 15px; border-bottom: 1px solid #EEEEEE; color: #777777; font-size: 13px;">
+                                        {{t "hotelReservation.address"}}</td>
+                                    <td
+                                        style="padding: 15px; border-bottom: 1px solid #EEEEEE; color: #333333; font-size: 13px;">
+                                        {{hotelAddress}}</td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="padding: 15px; border-bottom: 1px solid #EEEEEE; color: #777777; font-size: 13px;">
+                                        {{t "hotelReservation.phone"}}</td>
+                                    <td
+                                        style="padding: 15px; border-bottom: 1px solid #EEEEEE; color: #FF6200; font-size: 13px; font-weight: 700;">
+                                        {{hotelPhone}}</td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="padding: 15px; border-bottom: 1px solid #EEEEEE; color: #777777; font-size: 13px;">
+                                        {{t "hotelReservation.contactEmail"}}</td>
+                                    <td
+                                        style="padding: 15px; border-bottom: 1px solid #EEEEEE; color: #FF6200; font-size: 13px; font-weight: 700;">
+                                        <a href="mailto:{{hotelEmail}}"
+                                            style="color: #FF6200; text-decoration: none;">{{hotelEmail}}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="padding: 15px; border-bottom: 1px solid #EEEEEE; color: #777777; font-size: 13px;">
+                                        {{t "hotelReservation.cancellationPolicy"}}</td>
+                                    <td
+                                        style="padding: 15px; border-bottom: 1px solid #EEEEEE; color: #333333; font-size: 12px; line-height: 1.5;">
+                                        {{cancelPolicy}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 15px; color: #777777; font-size: 13px;">{{t
+                                        "hotelReservation.cancellationCost"}}</td>
+                                    <td style="padding: 15px; color: #333333; font-size: 13px;">
+                                        <ul style="margin: 0; padding: 0 0 0 15px;">
+                                            {{#each cancelFees}}
+                                            <li>{{condition}}: {{fee}}</li>
+                                            {{/each}}
+                                        </ul>
+                                        <p style="font-size: 11px; color: #777777; margin: 10px 0 0;">Times shown are in
+                                            the property's timezone.</p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- 6. Price Details Section -->
+                            <p style="font-size: 14px; color: #333333; font-weight: 700; margin: 35px 0 15px;">{{t
+                                "hotelReservation.priceDetails"}}</p>
+                            <table width="100%" cellpadding="0" cellspacing="0"
+                                style="border: 1px solid #EEEEEE; border-collapse: collapse;">
+                                <tr>
+                                    <td style="padding: 12px 15px; color: #666666; font-size: 13px;">
+                                        {{t "hotelReservation.roomFee"}} ({{nightCount}} {{t
+                                        "hotelReservation.nights"}})</td>
+                                    <td style="padding: 12px 15px; text-align: right; color: #333333; font-size: 13px;">
+                                        {{formatCurrency accommodationFee currency}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px 15px; color: #666666; font-size: 13px;">{{t
+                                        "hotelReservation.vatAmount"}}</td>
+                                    <td style="padding: 12px 15px; text-align: right; color: #333333; font-size: 13px;">
+                                        {{formatCurrency vatAmount currency}}</td>
+                                </tr>
+                                <tr style="background-color: #FAFAFA;">
+                                    <td style="padding: 15px; color: #333333; font-size: 16px; font-weight: 800;">{{t
+                                        "hotelReservation.totalAmount"}}</td>
+                                    <td
+                                        style="padding: 15px; text-align: right; color: #333333; font-size: 18px; font-weight: 800;">
+                                        {{formatCurrency totalAmount currency}}</td>
+                                </tr>
+                            </table>
+
+                            <br><br>
+
+                            <!-- 7. Payment Information Box -->
+                            <!-- Payment Information -->
+                            <table width="100%" cellpadding="0" cellspacing="0"
+                                style="margin: 20px 0; background-color: #F9F9F9; border: 1px solid #EEEEEE; border-radius: 4px;">
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <p style="color: #333333; font-size: 16px; font-weight: 800; margin: 0 0 10px;">
+                                            {{t "common.paymentInfo"}}
+                                        </p>
+                                        <p
+                                            style="color: #333333; font-size: 13px; font-weight: 700; margin: 0 0 20px; line-height: 1.4;">
+                                            {{paymentMessage}}</p>
+
+                                        <table width="100%" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td style="padding-bottom: 10px; border-bottom: 1px dotted #CCCCCC;">
+                                                    <span style="color: #777777; font-size: 11px;">{{formatDate
+                                                        paymentDate}}</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-top: 15px;">
+                                                    <table width="100%" cellpadding="0" cellspacing="0">
+                                                        <tr>
+                                                            <td style="vertical-align: middle;">
+                                                                <table cellpadding="0" cellspacing="0">
+                                                                    <tr>
+                                                                        <td style="padding-right: 10px;">
+                                                                            {{#ifEquals cardBrand "Mastercard"}}
+                                                                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/32px-Mastercard-logo.svg.png"
+                                                                                width="32" height="20" alt="Mastercard"
+                                                                                style="display: block;">
+                                                                            {{/ifEquals}}
+                                                                            {{#ifEquals cardBrand "Visa"}}
+                                                                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/32px-Visa_Inc._logo.svg.png"
+                                                                                width="32" height="10" alt="Visa"
+                                                                                style="display: block;">
+                                                                            {{/ifEquals}}
+                                                                        </td>
+                                                                        <td>
+                                                                            <span
+                                                                                style="color: #333333; font-size: 13px; font-weight: 700;">&bull;&bull;&bull;&bull;
+                                                                                {{cardLast4}}</span>
+                                                                            <span
+                                                                                style="color: #777777; font-size: 13px; font-weight: 400; margin-left: 10px;">{{cardHolderName}}</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td style="text-align: right; vertical-align: middle;">
+                                                                <span
+                                                                    style="color: #FF6200; font-size: 11px; margin-right: 10px;">{{paidStatus}}</span>
+                                                                <span
+                                                                    style="color: #333333; font-size: 15px; font-weight: 800;">{{formatCurrency
+                                                                    totalAmount currency}}</span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                    </td>
+                                </tr>
+                            </table>
+                            <br><br>
+
+                            <!-- 9. Stay Safe Online -->
+                            <!-- Stay Safe Online -->
+                            <table width="100%" cellpadding="0" cellspacing="0"
+                                style="margin: 20px 0; background-color: #FFFFFF; border: 1px solid #EEEEEE;">
+                                <tr>
+                                    <td style="padding: 15px;">
+                                        <table width="100%" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td width="35" style="width: 35px; vertical-align: top;">
+                                                    <div
+                                                        style="width: 24px; height: 24px; border: 2px solid #FFCC00; border-radius: 50%; text-align: center; line-height: 24px; color: #FFCC00; font-weight: 800; font-size: 14px;">
+                                                        i</div>
+                                                </td>
+                                                <td>
+                                                    <p
+                                                        style="color: #333333; font-size: 13px; font-weight: 800; margin: 0 0 5px;">
+                                                        {{t "common.staySafeTitle"}}</p>
+                                                    <p
+                                                        style="color: #666666; font-size: 12px; margin: 0 0 8px; line-height: 1.5;">
+                                                        {{t "common.staySafeText"}}</p>
+                                                    <a href="{{safeLinkUrl}}"
+                                                        style="color: #FF6200; font-size: 12px; font-weight: 700; text-decoration: none;">{{t
+                                                        "common.learnMore"}}</a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                            {{#if specialNote}}
+                            <p style="font-size: 14px; color: #333333; font-weight: 700; margin: 25px 0 10px;">{{t
+                                "hotelReservation.specialNote"}}</p>
+                            <p style="font-size: 13px; color: #666666; margin: 0 0 30px;">{{specialNote}}</p>
+                            {{/if}}
+
+                            <!-- CTA Button -->
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td align="{{__meta.align}}">
+                                        <a href="{{modifyUrl}}"
+                                            style="display: inline-block; background-color: #FF6200; color: #FFFFFF; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: 800; font-size: 14px;">{{t
+                                            "hotelReservation.modifyButton"}}</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Branded Footer -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #FFFFFF;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #FFFFFF;">
+                    <tr>
+                        <td style="padding: 30px; text-align: center; border-top: 1px solid #E5E5E5;">
+                            <p style="color: #666666; font-size: 14px; margin: 0;">
+                                {{t "common.regards"}},<br><strong style="color: #1A1A1A;">{{t "common.team"}}</strong>
+                            </p>
+                            <p style="color: #666666; font-size: 12px; margin: 15px 0 0;">&copy; {{currentYear}} {{t
+                                "common.copyright"}}. {{t "common.allRightsReserved"}}.</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

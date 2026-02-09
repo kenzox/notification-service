@@ -1,3 +1,4 @@
+import * as path from 'path';
 import nodemailer, { Transporter } from 'nodemailer';
 import { getEnv } from '../config/env.validation';
 import { logger } from '../utils/logger';
@@ -43,6 +44,13 @@ export class MailService {
                 replyTo: options.replyTo,
                 cc: options.cc?.join(', '),
                 bcc: options.bcc?.join(', '),
+                attachments: [
+                    {
+                        filename: 'logo.png',
+                        path: path.join(process.cwd(), 'templates/logo.png'),
+                        cid: 'logo',
+                    },
+                ],
             });
 
             logger.info({ messageId: info.messageId }, 'Email sent');

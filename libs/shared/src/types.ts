@@ -1,7 +1,7 @@
 // Email types
 export interface EmailRequest {
     to: string[];
-    locale?: string;
+    locale?: Locale;
     subject?: string;
     data?: Record<string, unknown>;
     meta?: EmailMeta;
@@ -37,10 +37,37 @@ export interface ApiError {
 export type TemplateKey =
     | 'reservation-confirmation'
     | 'flight-ticket'
+    | 'flight-details'
     | 'hotel-reservation'
     | 'package-reservation'
     | 'transfer-reservation'
     | 'welcome'
     | 'password-reset';
 
-export type Locale = 'tr' | 'en';
+export const TEMPLATE_KEYS: TemplateKey[] = [
+    'reservation-confirmation',
+    'flight-ticket',
+    'flight-details',
+    'hotel-reservation',
+    'package-reservation',
+    'transfer-reservation',
+    'welcome',
+    'password-reset',
+];
+
+// Locale types
+export type Locale = 'tr' | 'en' | 'ar' | 'he';
+export type Direction = 'ltr' | 'rtl';
+
+export const SUPPORTED_LOCALES: Locale[] = ['tr', 'en', 'ar', 'he'];
+export const RTL_LOCALES: Locale[] = ['ar', 'he'];
+
+export interface I18nMeta {
+    locale: Locale;
+    direction: Direction;
+    align: string;
+    oppositeAlign: string;
+    fontFamily: string;
+    intlLocale: string;
+    logoUrl?: string;
+}

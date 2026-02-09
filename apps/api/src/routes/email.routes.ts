@@ -11,6 +11,7 @@ emailRouter.use(authMiddleware);
 // Email endpoints
 emailRouter.post('/reservation-confirmation', emailController.sendReservationConfirmation);
 emailRouter.post('/flight-ticket', emailController.sendFlightTicket);
+emailRouter.post('/flight-details', emailController.sendFlightDetails);
 emailRouter.post('/hotel-reservation', emailController.sendHotelReservation);
 emailRouter.post('/package-reservation', emailController.sendPackageReservation);
 emailRouter.post('/transfer-reservation', emailController.sendTransferReservation);

@@ -1,16 +1,20 @@
 import { Request, Response, NextFunction } from 'express';
+import { Locale } from '@shared/types';
 import { MailService } from '../services/mail.service';
 import { TemplateService } from '../services/template.service';
+import { LocaleService } from '../services/locale.service';
 import { emailRequestSchema } from '../schemas/email.schema';
 import { logger } from '../utils/logger';
 
 export class EmailController {
     private mailService: MailService;
     private templateService: TemplateService;
+    private localeService: LocaleService;
 
     constructor() {
+        this.localeService = new LocaleService();
         this.mailService = new MailService();
-        this.templateService = new TemplateService();
+        this.templateService = new TemplateService(this.localeService);
     }
 
     private async sendEmail(
@@ -35,13 +39,23 @@ export class EmailController {
 
             const { to, locale, subject, data, meta } = validation.data;
 
+            if (!this.templateService.hasTemplate(templateKey)) {
+                res.status(501).json({
+                    success: false,
+                    error: {
+                        message: `Template not configured: ${templateKey}`,
+                    },
+                });
+                return;
+            }
+
             // Render template
             const html = await this.templateService.render(templateKey, locale, data);
 
             // Send email
             await this.mailService.send({
                 to,
-                subject: subject || this.getDefaultSubject(templateKey, locale),
+                subject: subject || this.localeService.getSubject(locale as Locale, templateKey),
                 html,
                 replyTo: meta?.reply_to,
                 cc: meta?.cc,
@@ -59,46 +73,14 @@ export class EmailController {
         }
     }
 
-    private getDefaultSubject(templateKey: string, locale: string): string {
-        const subjects: Record<string, Record<string, string>> = {
-            'reservation-confirmation': {
-                tr: 'Rezervasyon Onayı',
-                en: 'Reservation Confirmation',
-            },
-            'flight-ticket': {
-                tr: 'Uçak Bileti',
-                en: 'Flight Ticket',
-            },
-            'hotel-reservation': {
-                tr: 'Otel Rezervasyonu',
-                en: 'Hotel Reservation',
-            },
-            'package-reservation': {
-                tr: 'Paket Rezervasyonu',
-                en: 'Package Reservation',
-            },
-            'transfer-reservation': {
-                tr: 'Transfer Rezervasyonu',
-                en: 'Transfer Reservation',
-            },
-            welcome: {
-                tr: 'Hoş Geldiniz',
-                en: 'Welcome',
-            },
-            'password-reset': {
-                tr: 'Şifre Sıfırlama',
-                en: 'Password Reset',
-            },
-        };
-
-        return subjects[templateKey]?.[locale] || subjects[templateKey]?.en || templateKey;
-    }
-
     sendReservationConfirmation = (req: Request, res: Response, next: NextFunction) =>
         this.sendEmail(req, res, next, 'reservation-confirmation');
 
     sendFlightTicket = (req: Request, res: Response, next: NextFunction) =>
         this.sendEmail(req, res, next, 'flight-ticket');
+
+    sendFlightDetails = (req: Request, res: Response, next: NextFunction) =>
+        this.sendEmail(req, res, next, 'flight-details');
 
     sendHotelReservation = (req: Request, res: Response, next: NextFunction) =>
         this.sendEmail(req, res, next, 'hotel-reservation');

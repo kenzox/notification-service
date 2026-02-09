@@ -25,3 +25,7 @@ logs/
 
 # Test
 coverage/
+
+# Generated template artifacts
+templates/preview/
+templates/raw/

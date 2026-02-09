@@ -21,6 +21,7 @@ RUN npm ci --only=production
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/templates ./templates
+COPY --from=builder /app/locales ./locales
 
 EXPOSE 3000
 

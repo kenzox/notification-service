@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const emailRequestSchema = z.object({
     to: z.array(z.string().email()).min(1, 'At least one recipient is required'),
-    locale: z.string().default('tr'),
+    locale: z.enum(['tr', 'en', 'ar', 'he']).default('tr'),
     subject: z.string().optional(),
     data: z.record(z.unknown()).default({}),
     meta: z

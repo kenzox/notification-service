@@ -1,0 +1,64 @@
+<!-- Payment Information -->
+<table width="100%" cellpadding="0" cellspacing="0"
+    style="margin: 20px 0; background-color: #F9F9F9; border: 1px solid #EEEEEE; border-radius: 4px;">
+    <tr>
+        <td style="padding: 20px;">
+            <p style="color: #333333; font-size: 16px; font-weight: 800; margin: 0 0 10px;">{{t "common.paymentInfo"}}
+            </p>
+            <p style="color: #333333; font-size: 13px; font-weight: 700; margin: 0 0 20px; line-height: 1.4;">{{t
+                "hotelReservation.paymentScheduledText"}}</p>
+
+            <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td style="padding-bottom: 10px; border-bottom: 1px dotted #CCCCCC;">
+                        <span style="color: #777777; font-size: 11px;">{{formatDate paymentDate}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-top: 15px;">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td style="vertical-align: middle;">
+                                    <table cellpadding="0" cellspacing="0">
+                                        <tr>
+                                            <td style="padding-right: 10px;">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/32px-Mastercard-logo.svg.png"
+                                                    width="32" height="20" alt="Mastercard" style="display: block;">
+                                            </td>
+                                            <td>
+                                                <span
+                                                    style="color: #333333; font-size: 13px; font-weight: 700;">&bull;&bull;&bull;&bull;
+                                                    {{cardLastFour}}</span>
+                                                <span
+                                                    style="color: #777777; font-size: 13px; font-weight: 400; margin-left: 10px;">{{customerName}}</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td style="text-align: right; vertical-align: middle;">
+                                    <span
+                                        style="color: #FF6200; font-size: 11px; margin-right: 10px;">{{paymentStatus}}</span>
+                                    <span style="color: #333333; font-size: 15px; font-weight: 800;">{{formatCurrency
+                                        totalAmount currency}}</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin-top: 25px;">
+                <tr>
+                    <td>
+                        <a href="{{payNowUrl}}"
+                            style="display: inline-block; background-color: #FF6200; color: #FFFFFF; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: 700; font-size: 12px; margin-right: 10px;">{{t
+                            "common.payNow"}}</a>
+                        <a href="{{updateCardUrl}}"
+                            style="display: inline-block; background-color: #FFFFFF; color: #FF6200; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: 700; font-size: 12px; border: 1px solid #FF6200;">{{t
+                            "common.updateCard"}}</a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
