@@ -5,42 +5,193 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{t "flightDetails.title"}}</title>
+    {{> styles}}
 </head>
 
-<body
-    style="margin:0;padding:24px;background:#f5f5f5;font-family:'Montserrat', sans-serif;font-weight: 400;font-size: 14.3px;line-height: 24px;vertical-align: middle;direction:{{__meta.direction}};text-align:{{__meta.align}};">
-    <table width="100%" cellpadding="0" cellspacing="0">
-        <tr>
-            <td align="center">
-                <table width="700" cellpadding="0" cellspacing="0"
-                    style="background:#ffffff;border:1px solid #e5e5e5;border-radius:8px;">
-                    <tr>
-                        <td style="padding:24px;">
-                            <h1 style="margin:0 0 10px;color:#1a1a1a;">{{t "flightDetails.title"}}</h1>
-                            <p style="margin:0 0 16px;color:#333333;">{{t "flightDetails.roundTrip" departureCity=(or
-                                departureCity "-") arrivalCity=(or arrivalCity "-")}}</p>
-                            <table width="100%" cellpadding="8" cellspacing="0"
-                                style="border:1px solid #e5e5e5;border-radius:6px;">
+<body>
+    <div class="container">
+        <center>
+            {{> header}}
+
+            <!-- Main Card -->
+            <table width="600" cellpadding="0" cellspacing="0" class="main-card">
+                <tr>
+                    <td>
+                        <!-- Title -->
+                        <h2 style="margin: 0 0 18px; color: #000000;">
+                            {{t "flightTicket.greeting"
+                            guestName=(or customerName passengerName "Guest")
+                            flightCity=(or arrivalCity flights.[0].destinationCity destinationCity "-")}}
+                        </h2>
+
+                        <!-- PNR -->
+                        <table width="100%" cellpadding="0" cellspacing="0"
+                            style="margin: 0 0 24px; border: 1px solid #FF6200; border-radius: 4px;">
+                            <tr>
+                                <td align="center"
+                                    style="padding: 10px 12px; color: #333333; font-size: 13px; font-weight: 700;">
+                                    {{t "flightTicket.pnrLabel"}} : {{or pnrCode "-"}}
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Flight Details -->
+                        <h3>{{t "flightTicket.flightDetails"}}</h3>
+                        <table class="data-table" style="margin-bottom: 30px;">
+                            <tr>
+                                <td style="width: 35%; color: #666666; font-size: 13px;">{{t "flightTicket.departure"}}</td>
+                                <td style="color: #333333; font-size: 13px;">
+                                    <div style="line-height: 1.5;">{{or departureTime flights.[0].departureTime "-"}}</div>
+                                    <div style="line-height: 1.5;">{{formatDate (or departureDate flights.[0].departureDate reservationDate)}}</div>
+                                    <div style="line-height: 1.5;">{{or departureCity flights.[0].originCity "-"}}</div>
+                                    <div style="line-height: 1.5;">{{or departureAirport departureAirportName flights.[0].originAirport flights.[0].originAirportName departureCode flights.[0].originCode "-"}}</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 35%; color: #666666; font-size: 13px;">{{t "flightTicket.arrival"}}</td>
+                                <td style="color: #333333; font-size: 13px;">
+                                    <div style="line-height: 1.5;">{{or arrivalTime flights.[0].arrivalTime "-"}}</div>
+                                    <div style="line-height: 1.5;">{{formatDate (or arrivalDate flights.[0].arrivalDate reservationDate)}}</div>
+                                    <div style="line-height: 1.5;">{{or arrivalCity flights.[0].destinationCity "-"}}</div>
+                                    <div style="line-height: 1.5;">{{or arrivalAirport arrivalAirportName flights.[0].destinationAirport flights.[0].destinationAirportName arrivalCode flights.[0].destinationCode "-"}}</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 35%; color: #666666; font-size: 13px;">{{t "flightDetails.airline"}}</td>
+                                <td style="color: #333333; font-size: 13px;">{{or airlineName flights.[0].airlineName "-"}}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 35%; color: #666666; font-size: 13px;">{{t "flightDetails.flightNo"}}</td>
+                                <td style="color: #333333; font-size: 13px;">{{or flightNo flightNumber flights.[0].flightNumber "-"}}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 35%; color: #666666; font-size: 13px;">{{t "flightDetails.duration"}}</td>
+                                <td style="color: #333333; font-size: 13px;">{{or flightDuration duration flights.[0].duration "-"}}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 35%; color: #666666; font-size: 13px;">{{t "flightTicket.luggage"}}</td>
+                                <td style="color: #333333; font-size: 13px;">
+                                    {{or luggageInfo luggageAllowance flights.[0].luggageAllowance handBaggage flights.[0].handBaggage "-"}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 35%; color: #666666; font-size: 13px;">{{t "flightTicket.ticketNumber"}}</td>
+                                <td style="color: #333333; font-size: 13px;">{{or ticketNumber passengers.[0].ticketNumber "-"}}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 35%; color: #666666; font-size: 13px;">{{t "flightTicket.contact"}}</td>
+                                <td style="color: #FF6200; font-size: 13px;">
+                                    {{#if contactPhone}}
+                                    <span dir="rtl" style="direction: rtl; unicode-bidi: bidi-override; display: inline-block;">
+                                        {{contactPhone}}
+                                    </span>
+                                    {{else}}
+                                    {{or contact email "-"}}
+                                    {{/if}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 35%; color: #666666; font-size: 13px;">{{t "flightTicket.cancellationPolicy"}}</td>
+                                <td style="color: #666666; font-size: 12px; line-height: 1.5;">
+                                    {{or cancellationPolicy "-"}}
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Passenger Information -->
+                        <h3>{{t "common.passengerInfo"}}</h3>
+                        <table class="data-table" style="margin-bottom: 24px;">
+                            <thead>
                                 <tr>
-                                    <td style="color:#666666;">{{t "flightDetails.airline"}}</td>
-                                    <td style="color:#111111;">{{or airlineName "-"}}</td>
-                                    <td style="color:#666666;">{{t "flightDetails.flightNo"}}</td>
-                                    <td style="color:#111111;">{{or flightNo "-"}}</td>
+                                    <th>{{t "flightTicket.passenger"}}</th>
+                                    <th>{{t "common.nameSurname"}}</th>
+                                    <th>{{t "common.birthDate"}}</th>
+                                    <th>{{t "common.nationality"}}</th>
+                                    <th>{{t "flightTicket.ticketNumber"}}</th>
                                 </tr>
+                            </thead>
+                            <tbody>
+                                {{#if passengers}}
+                                {{#each passengers}}
                                 <tr>
-                                    <td style="color:#666666;">{{t "flightDetails.duration"}}</td>
-                                    <td style="color:#111111;">{{or duration "-"}}</td>
-                                    <td style="color:#666666;">{{t "flightDetails.class"}}</td>
-                                    <td style="color:#111111;">{{or cabinClass "-"}}</td>
+                                    <td>{{or passengerType type title ../passengerType "Adult"}}</td>
+                                    <td>
+                                        {{#if name}}
+                                        {{name}}
+                                        {{else}}
+                                        {{or firstName ""}} {{or lastName ""}}
+                                        {{/if}}
+                                    </td>
+                                    <td>{{or birthDate "-"}}</td>
+                                    <td>{{or nationality "-"}}</td>
+                                    <td>{{or ticketNumber ../ticketNumber "-"}}</td>
                                 </tr>
-                            </table>
-                            <p style="margin:16px 0 0;color:#666666;">{{t "flightDetails.importantInformation"}}</p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+                                {{/each}}
+                                {{else}}
+                                <tr>
+                                    <td>{{or passengerType "Adult"}}</td>
+                                    <td>{{or customerName passengerName "-"}}</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>{{or ticketNumber "-"}}</td>
+                                </tr>
+                                {{/if}}
+                            </tbody>
+                        </table>
+
+                        <!-- Payment Details -->
+                        <h3>{{t "flightTicket.paymentDetails"}}</h3>
+                        <table class="data-table" style="margin-bottom: 24px;">
+                            <tr>
+                                <td style="width: 70%; color: #666666; font-size: 13px;">{{t "flightTicket.ticketFee"}}</td>
+                                <td style="text-align: {{__meta.oppositeAlign}}; color: #333333; font-size: 13px;">
+                                    {{formatCurrency (or ticketFee totalAmount 0) (or currency "TRY")}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 70%; color: #666666; font-size: 13px;">{{t "flightTicket.vatAmount"}}</td>
+                                <td style="text-align: {{__meta.oppositeAlign}}; color: #333333; font-size: 13px;">
+                                    {{formatCurrency (or vatAmount 0) (or currency "TRY")}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #FAFAFA; color: #333333; font-weight: 700;">{{t "common.totalPrice"}}</td>
+                                <td
+                                    style="background-color: #FAFAFA; color: #000000; font-weight: 800; text-align: {{__meta.oppositeAlign}};">
+                                    {{formatCurrency (or totalAmount ticketFee 0) (or currency "TRY")}}
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Payment Information -->
+                        {{> payment-info}}
+
+                        <!-- Flight Notes -->
+                        <div style="background-color: #FFF8E1; border-radius: 6px; padding: 20px; margin-bottom: 30px;">
+                            <p style="margin: 0 0 10px; color: #6F4C0D; font-size: 16px; font-weight: 800;">
+                                {{t "common.flightNotesTitle"}}
+                            </p>
+                            <ul
+                                style="margin: 0; padding-{{__meta.align}}: 20px; color: #5A4318; font-size: 13px; line-height: 1.6;">
+                                <li>{{t "common.flightNote1"}}</li>
+                                <li>{{t "common.flightNote2"}}</li>
+                                <li>{{t "common.flightNote3"}}</li>
+                                <li>{{t "common.flightNote4"}}</li>
+                            </ul>
+                            <p style="margin: 10px 0 0; font-size: 12px;">
+                                <a href="{{or termsUrl '#'}}">{{t "common.learnMore"}}</a>
+                            </p>
+                        </div>
+
+                        <!-- Button -->
+                        {{> button url=(or manageBookingUrl ticketUrl modifyUrl reservationUrl bookingUrl '#') text=(t "common.viewTicket") }}
+                    </td>
+                </tr>
+            </table>
+
+            {{> footer}}
+        </center>
+    </div>
 </body>
 
 </html>

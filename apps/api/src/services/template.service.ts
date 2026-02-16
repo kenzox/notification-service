@@ -87,6 +87,13 @@ export class TemplateService {
             return arg1 === arg2 ? options.fn(this) : options.inverse(this);
         });
 
+        Handlebars.registerHelper('equalsIgnoreCase', function (arg1: unknown, arg2: unknown) {
+            if (arg1 === undefined || arg1 === null || arg2 === undefined || arg2 === null) {
+                return false;
+            }
+            return String(arg1).trim().toLowerCase() === String(arg2).trim().toLowerCase();
+        });
+
         // Arithmetic helper
         Handlebars.registerHelper('add', (a: number, b: number) => a + b);
 
@@ -135,8 +142,8 @@ export class TemplateService {
 
         const __i18n = this.localeService.getTranslations(validLocale);
         const __meta = this.localeService.getMeta(validLocale);
-
-        const context = { ...data, __i18n, __meta };
+        const normalizedData = this.normalizeTemplateData(data);
+        const context = { ...normalizedData, __i18n, __meta };
 
         try {
             return template(context);
@@ -189,5 +196,105 @@ export class TemplateService {
     clearCache(): void {
         this.templateCache.clear();
         this.registerPartials();
+    }
+
+    private normalizeTemplateData(data: Record<string, unknown>): Record<string, unknown> {
+        const normalized: Record<string, unknown> = { ...data };
+        const payment = this.asRecord(data.payment);
+
+        const paymentDate = this.pickFirst(
+            data.paymentDate,
+            payment?.paymentDate
+        );
+        const paymentStatus = this.pickFirst(
+            data.paymentStatus,
+            data.paidStatus,
+            payment?.paymentStatus,
+            payment?.paidStatus
+        );
+        const cardBrand = this.pickFirst(
+            data.cardBrand,
+            data.cardType,
+            payment?.cardBrand,
+            payment?.cardType
+        );
+        const cardLast4 = this.pickFirst(
+            data.cardLast4,
+            data.cardLastFour,
+            data.cardLastDigits,
+            data.cardNumberLast4,
+            payment?.cardLast4,
+            payment?.cardLastFour,
+            payment?.cardLastDigits,
+            payment?.cardNumberLast4
+        );
+        const cardHolder = this.pickFirst(
+            data.cardHolder,
+            data.cardHolderName,
+            payment?.cardHolder,
+            payment?.cardHolderName,
+            data.customerName
+        );
+        const currency = this.pickFirst(
+            data.currency,
+            payment?.currency
+        );
+        const totalAmount = this.pickFirst(
+            data.totalAmount,
+            payment?.totalAmount,
+            data.approximateAmount
+        );
+        const cardLogoUrl = this.pickFirst(
+            data.cardLogoUrl,
+            payment?.cardLogoUrl
+        );
+
+        if (paymentDate !== undefined) normalized.paymentDate = paymentDate;
+        if (paymentStatus !== undefined) normalized.paymentStatus = paymentStatus;
+        if (cardBrand !== undefined) normalized.cardBrand = cardBrand;
+        if (cardLast4 !== undefined) normalized.cardLast4 = cardLast4;
+        if (cardHolder !== undefined) normalized.cardHolder = cardHolder;
+        if (currency !== undefined) normalized.currency = currency;
+        if (totalAmount !== undefined) normalized.totalAmount = totalAmount;
+
+        const safeCardLogoUrl = this.sanitizeCardLogoUrl(cardLogoUrl);
+        if (safeCardLogoUrl !== undefined) {
+            normalized.cardLogoUrl = safeCardLogoUrl;
+        }
+
+        return normalized;
+    }
+
+    private pickFirst(...values: unknown[]): unknown {
+        for (const value of values) {
+            if (value !== undefined && value !== null && value !== '') {
+                return value;
+            }
+        }
+        return undefined;
+    }
+
+    private asRecord(value: unknown): Record<string, unknown> | undefined {
+        if (value && typeof value === 'object' && !Array.isArray(value)) {
+            return value as Record<string, unknown>;
+        }
+        return undefined;
+    }
+
+    private sanitizeCardLogoUrl(value: unknown): string | undefined {
+        if (typeof value !== 'string') {
+            return undefined;
+        }
+
+        const url = value.trim();
+        if (!url) {
+            return undefined;
+        }
+
+        if (url.startsWith('cid:') || url.startsWith('data:') || url.startsWith('/')) {
+            return url;
+        }
+
+        return undefined;
     }
 }

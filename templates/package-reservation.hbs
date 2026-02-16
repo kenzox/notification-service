@@ -5,44 +5,252 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{t "packageReservation.title"}}</title>
+    {{> styles}}
 </head>
 
-<body
-    style="margin:0;padding:24px;background:#f5f5f5;font-family:'Montserrat', sans-serif;font-weight: 400;font-size: 14.3px;line-height: 24px;vertical-align: middle;direction:{{__meta.direction}};text-align:{{__meta.align}};">
-    <table width="100%" cellpadding="0" cellspacing="0">
-        <tr>
-            <td align="center">
-                <table width="700" cellpadding="0" cellspacing="0"
-                    style="background:#ffffff;border:1px solid #e5e5e5;border-radius:8px;">
-                    <tr>
-                        <td style="padding:24px;">
-                            <h1 style="margin:0 0 10px;color:#1a1a1a;">{{t "packageReservation.title"}}</h1>
-                            <p style="margin:0 0 16px;color:#333333;">{{t "packageReservation.greeting" guestName=(or
-                                guestName customerName "Guest") tripCity=(or tripCity arrivalCity "-")}}</p>
-                            <table width="100%" cellpadding="8" cellspacing="0"
-                                style="border:1px solid #e5e5e5;border-radius:6px;">
+<body>
+    <div class="container">
+        <center>
+            {{> header}}
+
+            <!-- Main Card -->
+            <table width="600" cellpadding="0" cellspacing="0" class="main-card">
+                <tr>
+                    <td>
+
+                        <!-- Reservation Info Strip -->
+                        <table width="100%" cellpadding="0" cellspacing="0"
+                            style="margin-bottom: 30px; border-bottom: 1px solid #EEEEEE; padding-bottom: 20px;">
+                            <tr>
+                                <td valign="top" style="width: 25%; padding-right: 10px;">
+                                    <p
+                                        style="margin: 0 0 5px; font-size: 11px; font-weight: 700; color: #000000; text-transform: uppercase;">
+                                        {{t "packageReservation.reservationNumber"}}</p>
+                                    <p style="margin: 0; font-size: 13px; color: #666666;">{{reservationNumber}}</p>
+                                </td>
+                                <td valign="top" style="width: 25%; padding-right: 10px;">
+                                    <p
+                                        style="margin: 0 0 5px; font-size: 11px; font-weight: 700; color: #000000; text-transform: uppercase;">
+                                        {{t "common.status"}}</p>
+                                    <p style="margin: 0; font-size: 13px; color: #FF6200; font-weight: 600;">
+                                        {{status}}</p>
+                                </td>
+                                <td valign="top" style="width: 25%; padding-right: 10px;">
+                                    <p
+                                        style="margin: 0 0 5px; font-size: 11px; font-weight: 700; color: #000000; text-transform: uppercase;">
+                                        {{t "common.passengerCount"}}</p>
+                                    <p style="margin: 0; font-size: 13px; color: #666666;">{{passengerCount}}</p>
+                                </td>
+                                <td valign="top" style="width: 25%;">
+                                    <p
+                                        style="margin: 0 0 5px; font-size: 11px; font-weight: 700; color: #000000; text-transform: uppercase;">
+                                        {{t "common.reservationDate"}}</p>
+                                    <p style="margin: 0; font-size: 13px; color: #666666;">{{reservationDate}}</p>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Flights Section -->
+                        <h3 style="color: #000000; font-size: 16px; font-weight: 700; margin: 0 0 15px;">
+                            <img src="https://api.iconify.design/ph:airplane-tilt.svg" alt="Flight" width="20"
+                                height="20" style="vertical-align: middle; margin-right: 8px;">
+                            {{t "packageReservation.flights"}}
+                        </h3>
+                        <table width="100%" cellpadding="0" cellspacing="0"
+                            style="border: 1px solid #E0E0E0; border-radius: 8px; border-spacing: 0; overflow: hidden; margin-bottom: 30px; width: 100%;">
+                            <thead>
                                 <tr>
-                                    <td style="color:#666666;">{{t "packageReservation.confirmationCode"}}</td>
-                                    <td style="font-weight:700;color:#111111;">{{or confirmationCode bookingId "-"}}
-                                    </td>
+                                    <th
+                                        style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
+                                        {{t "packageReservation.date"}}</th>
+                                    <th
+                                        style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
+                                        {{t "packageReservation.flightNumber"}}</th>
+                                    <th
+                                        style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
+                                        {{t "packageReservation.departure"}}</th>
+                                    <th
+                                        style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
+                                        {{t "packageReservation.arrival"}}</th>
+                                    <th
+                                        style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
+                                        {{t "packageReservation.airline"}}</th>
+                                    <th
+                                        style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
+                                        {{t "packageReservation.duration"}}</th>
+                                    <th
+                                        style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
+                                        {{t "packageReservation.baggage"}}</th>
+                                    <th
+                                        style="background-color: #F9F9F9; padding: 8px 12px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; text-align: left;">
+                                        {{t "packageReservation.cabinBaggage"}}</th>
                                 </tr>
+                            </thead>
+                            <tbody>
+                                {{#each flights}}
                                 <tr>
-                                    <td style="color:#666666;">{{t "packageReservation.destination"}}</td>
-                                    <td style="color:#111111;">{{or destination arrivalCity "-"}}</td>
+                                    <td
+                                        style="padding: 6px 8px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; white-space: nowrap;">
+                                        {{date}}</td>
+                                    <td
+                                        style="padding: 6px 8px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0;">
+                                        {{flightNumber}}</td>
+                                    <td
+                                        style="padding: 6px 8px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; white-space: nowrap;">
+                                        {{departure}}</td>
+                                    <td
+                                        style="padding: 6px 8px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; white-space: nowrap;">
+                                        {{arrival}}</td>
+                                    <td
+                                        style="padding: 6px 8px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0;">
+                                        {{airline}}</td>
+                                    <td
+                                        style="padding: 6px 8px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0;">
+                                        {{duration}}</td>
+                                    <td
+                                        style="padding: 6px 8px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0;">
+                                        {{baggage}}</td>
+                                    <td
+                                        style="padding: 6px 8px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0;">
+                                        {{cabinBaggage}}</td>
                                 </tr>
-                                <tr>
-                                    <td style="color:#666666;">{{t "packageReservation.duration"}}</td>
-                                    <td style="color:#111111;">{{or duration "-"}}</td>
-                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+
+                        <!-- Hotel Section -->
+                        <h3 style="color: #000000; font-size: 16px; font-weight: 700; margin: 0 0 15px;">
+                            <img src="https://api.iconify.design/ph:buildings.svg" alt="Hotel" width="20" height="20"
+                                style="vertical-align: middle; margin-right: 8px;">
+                            {{t "packageReservation.accommodationInfo"}}
+                        </h3>
+                        <div
+                            style="border: 1px solid #E0E0E0; background-color: #F9F9F9; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+                            <p style="margin: 0 0 5px; font-size: 14px; font-weight: 800; color: #000000;">
+                                {{hotel.name}}</p>
+                            <p style="margin: 0 0 5px; font-size: 14px; color: #333333;">{{hotel.dates}}</p>
+                            <p style="margin: 0; font-size: 13px; color: #666666;">{{t "packageReservation.code"}}:
+                                {{hotel.code}}</p>
+                        </div>
+
+                        <!-- Guests Section -->
+                        <h3 style="color: #000000; font-size: 16px; font-weight: 700; margin: 0 0 15px;">
+                            {{t "packageReservation.guests"}}
+                        </h3>
+
+                        {{#each rooms}}
+                        <div style="border: 1px solid #E0E0E0; border-radius: 8px; margin-bottom: 20px; padding: 20px;">
+                            <h4 style="margin: 0 0 15px; font-size: 14px; font-weight: 700; color: #000000;">
+                                {{label}}</h4>
+
+                            <div style="margin-bottom: 15px;">
+                                <p style="margin: 0 0 5px; font-size: 13px; color: #666666;">
+                                    <img src="https://api.iconify.design/ph:bed.svg" width="16" height="16"
+                                        style="vertical-align: middle; margin-right: 5px;">
+                                    <strong>{{t "packageReservation.roomType"}}:</strong> {{type}}
+                                </p>
+                                <p style="margin: 0; font-size: 13px; color: #666666;">
+                                    <img src="https://api.iconify.design/ph:users.svg" width="16" height="16"
+                                        style="vertical-align: middle; margin-right: 5px;">
+                                    <strong>{{t "packageReservation.accommodationType"}}:</strong> {{accommodation}}
+                                </p>
+                            </div>
+
+                            <table width="100%" cellpadding="0" cellspacing="0"
+                                style="border: 1px solid #E0E0E0; border-radius: 8px; border-spacing: 0; overflow: hidden; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th
+                                            style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
+                                            {{t "common.nameSurname"}}</th>
+                                        <th
+                                            style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
+                                            {{t "common.gender"}}</th>
+                                        <th
+                                            style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
+                                            {{t "common.birthDate"}}</th>
+                                        <th
+                                            style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
+                                            {{t "common.nationality"}}</th>
+                                        <th
+                                            style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
+                                            {{t "common.passportNumber"}}</th>
+                                        <th
+                                            style="background-color: #F9F9F9; padding: 8px 12px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; text-align: left;">
+                                            {{t "common.passportExpiry"}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each guests}}
+                                    <tr>
+                                        <td
+                                            style="padding: 10px 12px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0;">
+                                            {{name}}</td>
+                                        <td
+                                            style="padding: 10px 12px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0;">
+                                            {{gender}}</td>
+                                        <td
+                                            style="padding: 10px 12px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0;">
+                                            {{birthDate}}</td>
+                                        <td
+                                            style="padding: 10px 12px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0;">
+                                            {{nationality}}</td>
+                                        <td
+                                            style="padding: 10px 12px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0;">
+                                            {{passport}}</td>
+                                        <td
+                                            style="padding: 6px 8px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0;">
+                                            {{expire}}</td>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
                             </table>
-                            <p style="margin:16px 0 0;color:#666666;">{{t "packageReservation.totalAmount"}}: <strong
-                                    style="color:#111111;">{{formatCurrency totalAmount currency}}</strong></p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+                            {{#if contact}}
+                            <div style="margin-top: 10px; font-size: 12px; color: #666666;">
+                                <img src="https://api.iconify.design/ph:phone.svg" width="14" height="14"
+                                    style="vertical-align: middle; margin-right: 4px;">
+                                {{contact}}
+                            </div>
+                            {{/if}}
+                        </div>
+                        {{/each}}
+
+                        <!-- Payment Info Box -->
+                        <div style="margin-top: 30px;">
+                            {{> payment-info}}
+                        </div>
+
+                        <!-- Flight Rules Box -->
+                        <div style="background-color: #FFF8E1; border-radius: 6px; padding: 20px; margin-bottom: 30px;">
+                            <h4 style="margin: 0 0 10px; color: #6F4C0D; font-size: 16px; font-weight: 800;">
+                                {{t "packageReservation.flightRules"}}
+                            </h4>
+                            <ul
+                                style="margin: 0; padding-{{__meta.align}}: 20px; color: #5A4318; font-size: 13px; line-height: 1.6;">
+                                <li>{{t "packageReservation.rule1"}}</li>
+                                <li>{{t "packageReservation.rule2"}}</li>
+                                <li>{{t "packageReservation.rule3"}}</li>
+                                <li>{{t "packageReservation.rule4"}}</li>
+                                <li>{{t "packageReservation.rule5"}}</li>
+                                <li>{{t "packageReservation.rule6"}}</li>
+                                <li>{{t "packageReservation.rule7"}}</li>
+                                <li>{{t "packageReservation.rule8"}}</li>
+                            </ul>
+                        </div>
+
+                        <!-- Button -->
+                        {{> button url=(or manageBookingUrl ticketUrl modifyUrl reservationUrl bookingUrl '#') text=(t "common.viewTicket") }}
+
+
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Footer -->
+            {{> footer}}
+
+        </center>
+    </div>
 </body>
 
 </html>

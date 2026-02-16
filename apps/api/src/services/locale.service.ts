@@ -112,7 +112,7 @@ export class LocaleService {
             oppositeAlign: meta.align === 'left' ? 'right' : 'left',
             fontFamily: meta.fontFamily,
             intlLocale: intlLocaleMap[locale] || 'en-US',
-            logoUrl: 'cid:logo',
+            logoUrl: 'cid:logo@calibretour',
         };
     }
 

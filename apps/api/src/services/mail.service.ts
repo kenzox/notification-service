@@ -47,8 +47,10 @@ export class MailService {
                 attachments: [
                     {
                         filename: 'logo.png',
-                        path: path.join(process.cwd(), 'templates/logo.png'),
-                        cid: 'logo',
+                        path: path.join(process.cwd(), 'templates/assets/logo.png'),
+                        cid: 'logo@calibretour',
+                        contentType: 'image/png',
+                        contentDisposition: 'inline',
                     },
                 ],
             });

@@ -11,6 +11,7 @@
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"**/*.ts\"",
     "generate-previews": "npx ts-node -P tsconfig.json -r tsconfig-paths/register scripts/generate-previews.ts",
+    "send-all-templates": "npx ts-node -P tsconfig.json -r tsconfig-paths/register scripts/send-all-templates.ts",
     "check:templates": "npx ts-node -P tsconfig.json -r tsconfig-paths/register scripts/validate-templates.ts",
     "test:prod": "npm run lint && npm run build && npm run check:templates && npm run generate-previews"
   },

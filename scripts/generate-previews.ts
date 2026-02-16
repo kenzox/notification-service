@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import Handlebars from 'handlebars';
-import { Locale } from '@shared/types';
+import { Locale, SUPPORTED_LOCALES } from '@shared/types';
 import { LocaleService } from '@app/services/locale.service';
 
 const mockLocaleService = new LocaleService();
@@ -49,6 +49,12 @@ function registerHelpers() {
 
     Handlebars.registerHelper('ifEquals', function (this: any, arg1: any, arg2: any, options: Handlebars.HelperOptions) {
         return arg1 === arg2 ? options.fn(this) : options.inverse(this);
+    });
+    Handlebars.registerHelper('equalsIgnoreCase', function (arg1: unknown, arg2: unknown) {
+        if (arg1 === undefined || arg1 === null || arg2 === undefined || arg2 === null) {
+            return false;
+        }
+        return String(arg1).trim().toLowerCase() === String(arg2).trim().toLowerCase();
     });
 
     Handlebars.registerHelper('eq', (a, b) => a === b);
@@ -98,6 +104,22 @@ const commonData = {
     currentYear: new Date().getFullYear(),
 };
 
+function parseLocales(raw?: string): Locale[] {
+    if (!raw) {
+        return [...SUPPORTED_LOCALES];
+    }
+
+    const values = raw.split(',').map(v => v.trim()).filter(Boolean);
+    const valid = values.filter((v): v is Locale => SUPPORTED_LOCALES.includes(v as Locale));
+
+    if (valid.length === 0) {
+        console.warn(`No valid locales found in PREVIEW_LOCALES="${raw}", falling back to all supported locales.`);
+        return [...SUPPORTED_LOCALES];
+    }
+
+    return Array.from(new Set(valid));
+}
+
 const mockDataMap: Record<string, any> = {
     'welcome': {
         ...commonData,
@@ -140,33 +162,87 @@ const mockDataMap: Record<string, any> = {
             'Cancellation before 2025-07-13: Free',
             'Late cancellation: 1 night penalty'
         ],
+        freeCancellationUntil: '2025-07-07',
+        freeCancellationTime: '23:59',
         priceItems: [
             { description: 'Accommodation (7 nights)', amount: 14000 }
         ],
+        nightCount: 7,
+        accommodationFee: 14000,
         vatAmount: 2520,
         totalAmount: 16520,
         currency: 'TRY',
+        paymentDate: '2025-07-10',
+        paymentStatus: 'Paid',
+        cardBrand: 'Mastercard',
+        cardLast4: '3234',
+        cardHolder: 'Mehmet Demir',
         specialNote: 'Late check-in requested.',
         modifyUrl: 'https://calibretour.com/my-bookings/987654',
-        timezone: 'GMT+3'
+        timezone: 'CEST',
+        safeLinkUrl: 'https://calibretour.com/security'
     },
     'flight-ticket': {
         ...commonData,
         customerName: 'Zeynep Kaya',
-        flightNumber: 'TK1234',
-        origin: 'IST',
-        destination: 'JFK',
-        departureDate: '2025-08-10',
-        departureTime: '10:30',
-        arrivalDate: '2025-08-10',
-        arrivalTime: '14:30',
-        seatNumber: '12A',
-        gate: 'B12',
-        pnrCode: 'PNR789',
-        totalAmount: 12500,
-        currency: 'TRY',
-        isInternational: true,
-        cabinClass: 'Economy'
+        pnrCode: 'RS0000000115',
+        issueDate: '13 October 2025',
+        modificationDate: '13 October 2025',
+        createdBy: 'CALIBRE TOUR',
+        flightNumber: 'IZ 73',
+        airlineName: 'ARKIA AIRLINES',
+        airlineLogo: 'https://upload.wikimedia.org/wikipedia/commons/4/46/Arkia_Logo_2017.png',
+        departureDate: '20 October 2025',
+        departureTime: '10:00',
+        departureAirportCode: 'TLV',
+        departureCity: 'Ben Gurion Airport',
+        arrivalDate: '20 October 2025',
+        arrivalTime: '11:30',
+        arrivalAirportCode: 'RHO',
+        arrivalCity: 'Rodos International Airport',
+        luggageAllowance: '20 kg',
+        handBaggage: '8 kg',
+        terminal: '-',
+        seatClass: 'ECONOMY',
+        flightDuration: '90 dk',
+        returnFlight: {
+            flightNumber: 'IZ 70',
+            airlineName: 'ARKIA AIRLINES',
+            airlineLogo: 'https://upload.wikimedia.org/wikipedia/commons/4/46/Arkia_Logo_2017.png',
+            departureDate: '27 October 2025',
+            departureTime: '08:00',
+            departureAirportCode: 'RHO',
+            departureCity: 'Rodos International Airport',
+            arrivalDate: '27 October 2025',
+            arrivalTime: '09:30',
+            arrivalAirportCode: 'TLV',
+            arrivalCity: 'Ben Gurion Airport',
+            luggageAllowance: '20 kg',
+            handBaggage: '8 kg',
+            terminal: '-',
+            seatClass: 'ECONOMY',
+            flightDuration: '90 dk'
+        },
+        passengers: [
+            {
+                title: 'Mr.',
+                firstName: 'DENIZ',
+                lastName: 'KEMAHLIOGLU',
+                birthDate: '22 Aralik 1999',
+                nationality: 'Turkey'
+            }
+        ],
+        ticketFee: 1444.8,
+        vatAmount: 96,
+        totalAmount: 1514.08,
+        currency: 'USD',
+        paymentDate: '26 Jul 2025',
+        paymentStatus: 'Paid',
+        cardBrand: 'Mastercard',
+        cardLast4: '3234',
+        cardHolder: 'Guest Name',
+        ticketUrl: 'https://calibretour.com/tickets/RS0000000115',
+        manageBookingUrl: '#'
     },
     'flight-details': {
         ...commonData,
@@ -178,8 +254,10 @@ const mockDataMap: Record<string, any> = {
                 flightNumber: 'TK1234',
                 originCity: 'Istanbul',
                 originCode: 'IST',
+                originAirportName: 'Istanbul Airport',
                 destinationCity: 'New York',
                 destinationCode: 'JFK',
+                destinationAirportName: 'John F. Kennedy International Airport',
                 departureDate: '2025-08-10',
                 departureTime: '10:30',
                 arrivalDate: '2025-08-10',
@@ -189,51 +267,162 @@ const mockDataMap: Record<string, any> = {
             }
         ],
         passengers: [
-            { firstName: 'Zeynep', lastName: 'Kaya', ticketNumber: '023123456789' }
+            {
+                passengerType: 'Adult',
+                firstName: 'Zeynep',
+                lastName: 'Kaya',
+                birthDate: '1991-04-19',
+                nationality: 'Turkey',
+                ticketNumber: '023123456789'
+            },
+            {
+                passengerType: 'Child',
+                firstName: 'Mert',
+                lastName: 'Kaya',
+                birthDate: '2016-09-08',
+                nationality: 'Turkey',
+                ticketNumber: '023123456790'
+            }
+        ],
+        priceItems: [
+            { label: 'Ticket Fee', amount: 12400 },
+            { label: 'VAT', amount: 100 }
         ],
         totalAmount: 12500,
-        currency: 'TRY'
+        currency: 'TRY',
+        paymentDate: '2025-08-01',
+        paymentStatus: 'Paid',
+        cardType: 'Mastercard',
+        cardLastDigits: '3234',
+        cardHolderName: 'Zeynep Kaya',
+        manageBookingUrl: 'https://calibretour.com/my-bookings/PNR789'
     },
     'reservation-confirmation': {
         ...commonData,
         customerName: 'Can Öztürk',
+        reservationNumber: 'B-12345',
         bookingId: 'B-12345',
+        reservationDate: '2025-01-20',
         bookingDate: '2025-01-20',
+        status: 'Confirmed',
+        checkInDate: '2025-02-10',
+        checkInTime: '14:00',
+        checkOutDate: '2025-02-14',
+        checkOutTime: '12:00',
         totalAmount: 5000,
         currency: 'TRY',
+        priceItems: [
+            { label: 'Museum Pass', amount: 1000 },
+            { label: 'Guided City Tour', amount: 4000 }
+        ],
         items: [
             { name: 'Museum Pass', price: 1000 },
             { name: 'Guided City Tour', price: 4000 }
-        ]
+        ],
+        paymentDate: '2025-01-19',
+        paymentStatus: 'Paid',
+        cardBrand: 'Mastercard',
+        cardLast4: '4242',
+        cardHolder: 'Can Öztürk',
+        reservationUrl: 'https://calibretour.com/my-bookings/B-12345'
     },
     'package-reservation': {
         ...commonData,
-        customerName: 'Selin Yıldız',
-        packageId: 'PKG-777',
-        packageName: 'Cappadocia Magic Package',
-        bookingDate: '2025-05-01',
-        hotelName: 'Cave Hotel Göreme',
-        flightNumber: 'TK2000',
-        totalAmount: 25000,
-        currency: 'TRY',
-        items: [
-            { name: 'Accommodation', price: 15000 },
-            { name: 'Flights', price: 5000 },
-            { name: 'Balloon Tour', price: 5000 }
-        ]
+        reservationNumber: 'RS0000000094',
+        status: 'Beklemede',
+        passengerCount: 9,
+        reservationDate: '12.07.2025',
+        flights: [
+            {
+                date: '02.08.2025',
+                flightNumber: 'IZ 75',
+                departure: 'TLV - 10:30',
+                arrival: 'RHO - 12:00',
+                airline: 'ARKIA AIRLINES',
+                duration: '1h 30m',
+                baggage: '20 KG',
+                cabinBaggage: '8 KG'
+            },
+            {
+                date: '09.08.2025',
+                flightNumber: 'IZ 76',
+                departure: 'RHO - 13:30',
+                arrival: 'TLV - 15:00',
+                airline: 'ARKIA AIRLINES',
+                duration: '1h 30m',
+                baggage: '20 KG',
+                cabinBaggage: '8 KG'
+            }
+        ],
+        hotel: {
+            name: 'GREEN NATURE DIAMOND HOTEL',
+            dates: '02.08.2025 - 09.08.2025',
+            code: '250802TLVRH002007'
+        },
+        rooms: [
+            {
+                label: 'Oda 1',
+                type: 'STANDARD ROOM SEA VIEW',
+                accommodation: 'İKİ YETİŞKİN',
+                guests: [
+                    { name: 'ADAM ABED', gender: 'Male', birthDate: '18.06.2007', nationality: 'Israel', passport: '36221407', expire: '01.01.2027' },
+                    { name: 'TAREQ ABED', gender: 'Male', birthDate: '20.05.1979', nationality: 'Israel', passport: '35523210', expire: '01.01.2027' }
+                ],
+                contact: 'sisilia@4seasons.co.il | 972522976719'
+            },
+            {
+                label: 'Oda 2',
+                type: 'STANDARD ROOM LAND VIEW',
+                accommodation: 'İKİ YETİŞKİN',
+                guests: [
+                    { name: 'TASNIM ZOABI', gender: 'Female', birthDate: '07.08.1995', nationality: 'Israel', passport: '40341904', expire: '01.01.2027' },
+                    { name: 'DAHER ZOABI', gender: 'Male', birthDate: '25.03.1952', nationality: 'Israel', passport: '32120873', expire: '01.01.2027' }
+                ],
+                contact: 'sisilia@4seasons.co.il | 972522976719'
+            },
+            {
+                label: 'Oda 3',
+                type: 'STANDARD ROOM LAND VIEW',
+                accommodation: 'İKİ YETİŞKİN + BEBEK',
+                guests: [
+                    { name: 'SAWSAN ZOUBI', gender: 'Male', birthDate: '27.02.1960', nationality: 'Israel', passport: '40341963', expire: '01.01.2027' },
+                    { name: 'RANIN ZUABIABED', gender: 'Male', birthDate: '29.10.1980', nationality: 'Israel', passport: '31928651', expire: '01.01.2027' }
+                ]
+            }
+        ],
+        totalAmount: 1514.08,
+        currency: 'USD',
+        paymentDate: '26 Jul 2025',
+        paymentStatus: 'Paid',
+        cardBrand: 'Mastercard',
+        cardLast4: '3234',
+        cardHolder: 'Guest Name'
     },
     'transfer-reservation': {
         ...commonData,
-        customerName: 'Emre Aydın',
+        customerName: 'DENIZ KEMAHLIOGLU',
         transferType: 'Airport Pick-up',
-        pickupLocation: 'Antalya Airport (AYT)',
-        dropoffLocation: 'Titanic Deluxe Lara',
-        pickupDate: '2025-07-15',
-        pickupTime: '15:30',
+        pickupLocation: 'Calibre Tour',
+        dropoffLocation: 'Travel',
         vehicleType: 'VIP Minibus',
-        passengerCount: 4,
-        totalAmount: 850,
-        currency: 'TRY'
+        duration: '20 min',
+        passengerCount: 1,
+        date: '2025-07-26',
+        passengers: [
+            { name: 'DENIZ', surname: 'KEMAHLIOGLU', birthDate: '22 Aralık 1999', nationality: 'Turkey' }
+        ],
+        priceItems: [
+            { label: 'Base Price', amount: 1300.00 },
+            { label: 'VAT (8%)', amount: 96.00 },
+            { label: 'Service Fee', amount: 118.08 }
+        ],
+        totalAmount: 1514.08,
+        currency: 'USD',
+        paymentDate: '26 Jul 2025',
+        paymentStatus: 'Paid',
+        cardBrand: 'Mastercard',
+        cardLast4: '3234',
+        cardHolder: 'Guest Name'
     },
     'flight-confirmation-mail-7': {
         ...commonData,
@@ -549,32 +738,57 @@ async function generate() {
     }
 
     const files = fs.readdirSync(templatesDir).filter(f => f.endsWith('.hbs'));
-    const locale = 'tr';
-    const __meta = { ...mockLocaleService.getMeta(locale as Locale), logoUrl: '../logo.png' };
-    const __i18n = mockLocaleService.getTranslations(locale as Locale);
+    const locales = parseLocales(process.env.PREVIEW_LOCALES);
+    const defaultLocale = locales[0];
+    const failures: { template: string; locale: Locale; message: string }[] = [];
 
     for (const file of files) {
         const name = path.basename(file, '.hbs');
         const templatePath = path.join(templatesDir, file);
-        const outputPath = path.join(previewDir, `${name}.html`);
-
         const content = fs.readFileSync(templatePath, 'utf-8');
         const template = Handlebars.compile(content);
-
         const data = mockDataMap[name] || { ...commonData };
-        try {
-            const rendered = template({
-                ...data,
-                __meta,
-                __i18n
-            });
 
-            fs.writeFileSync(outputPath, rendered);
-            console.log(`Generated: ${outputPath}`);
-        } catch (error: any) {
-            console.error(`Error generating ${name}:`, error.message);
+        for (const locale of locales) {
+            const __meta = { ...mockLocaleService.getMeta(locale), logoUrl: '../assets/logo.png' };
+            const __i18n = mockLocaleService.getTranslations(locale);
+            const outputPath = path.join(previewDir, `${name}.${locale}.html`);
+
+            try {
+                const rendered = template({
+                    ...data,
+                    __meta,
+                    __i18n
+                });
+
+                fs.writeFileSync(outputPath, rendered);
+                console.log(`Generated: ${outputPath}`);
+
+                // Backward compatibility for existing consumers expecting unsuffixed filenames.
+                if (locale === defaultLocale) {
+                    const legacyPath = path.join(previewDir, `${name}.html`);
+                    fs.writeFileSync(legacyPath, rendered);
+                }
+            } catch (error: any) {
+                failures.push({
+                    template: name,
+                    locale,
+                    message: error?.message || String(error)
+                });
+                console.error(`Error generating ${name} (${locale}):`, error?.message || error);
+            }
         }
     }
+
+    if (failures.length > 0) {
+        console.error(`\nPreview generation completed with ${failures.length} error(s).`);
+        for (const failure of failures) {
+            console.error(`- ${failure.template} (${failure.locale}): ${failure.message}`);
+        }
+        throw new Error('Preview generation failed for one or more templates.');
+    }
+
+    console.log(`\nPreview generation completed successfully for ${files.length} templates x ${locales.length} locales.`);
 }
 
 generate().catch(console.error);

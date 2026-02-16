@@ -47,6 +47,15 @@ npm run sart
 # Template ve i18n doğrulama
 npm run check:templates
 
+# Preview üretimi (varsayılan: tr,en,ar,he)
+npm run generate-previews
+
+# Toplu template gönderimi (varsayılan: dry-run, mail atmaz)
+npm run send-all-templates
+
+# Toplu template gönderimi (gerçek SMTP gönderimi)
+SEND_LIVE=1 npm run send-all-templates
+
 # Production readiness test paketi
 npm run test:prod
 ```
@@ -146,9 +155,12 @@ curl -X POST http://localhost:3000/api/email/welcome \
 ```
 
 ## Template Yapısı
+Tüm şablonlar `templates/partials/` altındaki ortak bileşenleri (header, footer, styles, button) kullanır. Bu sayede tasarım bütünlüğü sağlanır.
 
 ```
 templates/
+├── assets/
+│   └── logo.png
 ├── flight-ticket.hbs
 ├── flight-details.hbs
 ├── hotel-reservation.hbs
@@ -158,6 +170,11 @@ templates/
 ├── welcome.hbs
 ├── password-reset.hbs
 └── partials/
+    ├── styles.hbs
+    ├── header.hbs
+    ├── footer.hbs
+    ├── button.hbs
+    └── payment-info.hbs
 
 locales/
 ├── tr.json
@@ -165,6 +182,33 @@ locales/
 ├── ar.json
 └── he.json
 ```
+
+## Preview ve Toplu Gönderim Scriptleri
+
+### Preview Üretimi
+- Komut: `npm run generate-previews`
+- Varsayılan locale seti: `tr,en,ar,he`
+- Üretilen dosya formatı:
+  - Locale bazlı: `templates/preview/<template>.<locale>.html`
+  - Geriye uyumluluk: varsayılan locale için `templates/preview/<template>.html`
+- Locale filtreleme:
+  - `PREVIEW_LOCALES=tr,en npm run generate-previews`
+
+### Tüm Template'leri Gönderme
+- Komut: `npm run send-all-templates`
+- Varsayılan davranış:
+  - Tüm template anahtarlarını işler
+  - Varsayılan locale: `en`
+- Güvenli mod (default, mail göndermez):
+  - `npm run send-all-templates`
+- Gerçek SMTP gönderimi:
+  - `SEND_LIVE=1 npm run send-all-templates`
+- Zorunlu dry-run (SEND_LIVE açık olsa bile):
+  - `SEND_LIVE=1 SEND_DRY_RUN=1 npm run send-all-templates`
+- Locale/template filtreleme:
+  - `SEND_LIVE=1 SEND_LOCALES=tr,en SEND_TEMPLATES=welcome,password-reset npm run send-all-templates`
+- Hedef adres override:
+  - `SEND_LIVE=1 TEST_TARGET_EMAIL=you@example.com npm run send-all-templates`
 
 ### Handlebars Helpers
 
@@ -176,6 +220,7 @@ locales/
 | `formatDate` | `{{formatDate tarih}}` | Locale'e göre tarih formatı |
 | `formatCurrency` | `{{formatCurrency tutar para}}` | Locale'e göre para formatı |
 | `ifEquals` | `{{#ifEquals a b}}...{{/ifEquals}}` | Eşitlik kontrolü |
+| `equalsIgnoreCase` | `{{#if (equalsIgnoreCase a b)}}...{{/if}}` | Büyük/küçük harf duyarsız eşitlik |
 | `add` | `{{add a b}}` | Sayısal toplama |
 | `or` | `{{or a b "fallback"}}` | İlk dolu değeri döndürür |
 | `concat` | `{{concat a "-" b}}` | String birleştirir |
@@ -189,6 +234,7 @@ locales/
 | `npm run build` | TypeScript derleme kontrolü |
 | `npm run check:templates` | Template derleme + i18n key doğrulama |
 | `npm run generate-previews` | Tüm template preview HTML üretimi |
+| `npm run send-all-templates` | Tüm template'leri (locale kombinasyonlarıyla) test amaçlı gönderim |
 | `npm run test:prod` | Lint + build + template check + preview (tek komut) |
 
 ## Docker
@@ -226,6 +272,12 @@ API dokümantasyonuna `/docs` adresinden erişebilirsiniz.
 | `SMTP_SECURE` | Hayır | TLS kullanımı (default: false) |
 | `SMTP_FROM` | **Evet** | Gönderen e-posta adresi |
 | `LOG_LEVEL` | Hayır | debug/info/warn/error |
+| `PREVIEW_LOCALES` | Hayır | Preview locale listesi (örn: `tr,en`) |
+| `SEND_LOCALES` | Hayır | Toplu gönderimde kullanılacak locale listesi (default: `en`) |
+| `SEND_TEMPLATES` | Hayır | Toplu gönderimde kullanılacak template listesi (örn: `welcome,password-reset`) |
+| `SEND_LIVE` | Hayır | `1/true` ise gerçek SMTP gönderimi yapar (default: kapalı) |
+| `SEND_DRY_RUN` | Hayır | `1/true` ise mail göndermez, sadece render kontrolü yapar |
+| `TEST_TARGET_EMAIL` | Hayır | Toplu gönderim hedef e-posta adresi override |
 
 ## Hata Kodları
 

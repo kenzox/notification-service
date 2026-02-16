@@ -28,7 +28,8 @@
     },
     "include": [
         "apps/**/*.ts",
-        "libs/**/*.ts"
+        "libs/**/*.ts",
+        "scripts/**/*.ts"
     ],
     "exclude": [
         "node_modules",

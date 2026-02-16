@@ -5,43 +5,137 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{t "reservationConfirmation.title"}}</title>
+    {{> styles}}
 </head>
 
-<body
-    style="margin:0;padding:24px;background:#f5f5f5;font-family:'Montserrat', sans-serif;font-weight: 400;font-size: 14.3px;line-height: 24px;vertical-align: middle;direction:{{__meta.direction}};text-align:{{__meta.align}};">
-    <table width="100%" cellpadding="0" cellspacing="0">
-        <tr>
-            <td align="center">
-                <table width="700" cellpadding="0" cellspacing="0"
-                    style="background:#ffffff;border:1px solid #e5e5e5;border-radius:8px;">
-                    <tr>
-                        <td style="padding:24px;">
-                            <h1 style="margin:0 0 10px;color:#1a1a1a;">{{t "reservationConfirmation.title"}}</h1>
-                            <p style="margin:0 0 16px;color:#333333;">{{t "reservationConfirmation.confirmed"}}</p>
-                            <table width="100%" cellpadding="8" cellspacing="0"
-                                style="border:1px solid #e5e5e5;border-radius:6px;">
-                                <tr>
-                                    <td style="color:#666666;">{{t "reservationConfirmation.reservationNumber"}}</td>
-                                    <td style="font-weight:700;color:#111111;">{{or reservationNumber bookingId "-"}}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="color:#666666;">{{t "reservationConfirmation.date"}}</td>
-                                    <td style="color:#111111;">{{formatDate reservationDate}}</td>
-                                </tr>
-                                <tr>
-                                    <td style="color:#666666;">{{t "reservationConfirmation.status"}}</td>
-                                    <td style="color:#111111;">{{t "reservationConfirmation.statusConfirmed"}}</td>
-                                </tr>
-                            </table>
-                            <p style="margin:16px 0 0;color:#666666;">{{t "reservationConfirmation.totalAmount"}}:
-                                <strong style="color:#111111;">{{formatCurrency totalAmount currency}}</strong></p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+<body>
+    <div class="container">
+        <center>
+            {{> header}}
+
+            <!-- Main Card -->
+            <table width="600" cellpadding="0" cellspacing="0" class="main-card">
+                <tr>
+                    <td>
+                        <h2 style="margin: 0 0 10px; color: #000000;">{{t "reservationConfirmation.title"}}</h2>
+                        <p style="margin: 0 0 22px; color: #333333; font-size: 14px;">{{t "reservationConfirmation.confirmed"}}</p>
+
+                        <!-- Reservation Info Strip -->
+                        <table width="100%" cellpadding="0" cellspacing="0"
+                            style="margin-bottom: 24px; border-bottom: 1px solid #EEEEEE; padding-bottom: 16px;">
+                            <tr>
+                                <td valign="top" style="width: 25%; padding-right: 10px;">
+                                    <p
+                                        style="margin: 0 0 5px; font-size: 11px; font-weight: 700; color: #000000; text-transform: uppercase;">
+                                        {{t "reservationConfirmation.reservationNumber"}}</p>
+                                    <p style="margin: 0; font-size: 13px; color: #666666;">{{or reservationNumber bookingId "-"}}</p>
+                                </td>
+                                <td valign="top" style="width: 25%; padding-right: 10px;">
+                                    <p
+                                        style="margin: 0 0 5px; font-size: 11px; font-weight: 700; color: #000000; text-transform: uppercase;">
+                                        {{t "common.status"}}</p>
+                                    <p style="margin: 0; font-size: 13px; color: #FF6200; font-weight: 600;">
+                                        {{or status (t "reservationConfirmation.statusConfirmed")}}
+                                    </p>
+                                </td>
+                                <td valign="top" style="width: 25%; padding-right: 10px;">
+                                    <p
+                                        style="margin: 0 0 5px; font-size: 11px; font-weight: 700; color: #000000; text-transform: uppercase;">
+                                        {{t "common.reservationDate"}}</p>
+                                    <p style="margin: 0; font-size: 13px; color: #666666;">{{formatDate (or reservationDate bookingDate)}}</p>
+                                </td>
+                                <td valign="top" style="width: 25%;">
+                                    <p
+                                        style="margin: 0 0 5px; font-size: 11px; font-weight: 700; color: #000000; text-transform: uppercase;">
+                                        {{t "common.totalPrice"}}</p>
+                                    <p style="margin: 0; font-size: 13px; color: #000000; font-weight: 700;">
+                                        {{formatCurrency (or totalAmount 0) (or currency "TRY")}}
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+
+                        {{#if checkInDate}}
+                        <table class="data-table" style="margin-bottom: 24px;">
+                            <tr>
+                                <td style="width: 35%; color: #666666; font-size: 13px;">{{t "reservationConfirmation.checkIn"}}</td>
+                                <td style="color: #333333; font-size: 13px;">
+                                    {{formatDate checkInDate}} {{or checkInTime "-"}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 35%; color: #666666; font-size: 13px;">{{t "reservationConfirmation.checkOut"}}</td>
+                                <td style="color: #333333; font-size: 13px;">
+                                    {{formatDate checkOutDate}} {{or checkOutTime "-"}}
+                                </td>
+                            </tr>
+                        </table>
+                        {{/if}}
+
+                        <!-- Price Details -->
+                        <h3>{{t "common.paymentDetails"}}</h3>
+                        <table class="data-table">
+                            {{#if priceItems}}
+                            {{#each priceItems}}
+                            <tr>
+                                <td style="width: 70%; font-size: 13px; color: #666666;">{{or label description name (t "reservationConfirmation.units")}}</td>
+                                <td style="text-align: {{../__meta.oppositeAlign}}; font-size: 13px; color: #333333;">
+                                    {{formatCurrency (or amount price 0) ../currency}}
+                                </td>
+                            </tr>
+                            {{/each}}
+                            {{else}}
+                            {{#if items}}
+                            {{#each items}}
+                            <tr>
+                                <td style="width: 70%; font-size: 13px; color: #666666;">{{or name (t "reservationConfirmation.units")}}</td>
+                                <td style="text-align: {{../__meta.oppositeAlign}}; font-size: 13px; color: #333333;">
+                                    {{formatCurrency (or price amount 0) ../currency}}
+                                </td>
+                            </tr>
+                            {{/each}}
+                            {{else}}
+                            <tr>
+                                <td style="width: 70%; font-size: 13px; color: #666666;">{{t "reservationConfirmation.units"}}</td>
+                                <td style="text-align: {{__meta.oppositeAlign}}; font-size: 13px; color: #333333;">
+                                    {{formatCurrency (or totalAmount 0) (or currency "TRY")}}
+                                </td>
+                            </tr>
+                            {{/if}}
+                            {{/if}}
+                            <tr>
+                                <td style="background-color: #FAFAFA; color: #333333; font-weight: 700;">{{t "common.totalPrice"}}</td>
+                                <td
+                                    style="background-color: #FAFAFA; color: #000000; font-weight: 800; text-align: {{__meta.oppositeAlign}};">
+                                    {{formatCurrency (or totalAmount 0) (or currency "TRY")}}
+                                </td>
+                            </tr>
+                        </table>
+
+                        {{> payment-info}}
+
+                        <!-- Important Info -->
+                        <div style="background-color: #FFF8E1; border-radius: 6px; padding: 20px; margin-bottom: 30px;">
+                            <h4 style="margin: 0 0 10px; color: #6F4C0D; font-size: 16px; font-weight: 800;">
+                                {{t "common.importantInfo"}}
+                            </h4>
+                            <ul
+                                style="margin: 0; padding-{{__meta.align}}: 20px; color: #5A4318; font-size: 13px; line-height: 1.6;">
+                                <li>{{t "reservationConfirmation.paymentInfoText"}}</li>
+                                <li>{{t "reservationConfirmation.currencyExchangeText"}}</li>
+                                <li>{{t "reservationConfirmation.additionalInfoText"}}</li>
+                            </ul>
+                        </div>
+
+                        <!-- Button -->
+                        {{> button url=(or manageBookingUrl ticketUrl modifyUrl reservationUrl bookingUrl '#') text=(t "common.viewTicket") }}
+                    </td>
+                </tr>
+            </table>
+
+            {{> footer}}
+        </center>
+    </div>
 </body>
 
 </html>

@@ -39,14 +39,25 @@ async function sendTest() {
             hotelLocation: 'Lara Beach, Antalya, Turkey',
             hotelPhone: '+90 242 123 45 67',
             hotelEmail: 'info@antalyaresort.com',
+            freeCancellationUntil: '2025-07-07',
+            freeCancellationTime: '23:59',
             priceItems: [
                 { description: 'Accommodation (7 nights)', amount: 14000 }
             ],
+            nightCount: 7,
+            accommodationFee: 14000,
             vatAmount: 2520,
             totalAmount: 16520,
             currency: 'TRY',
+            paymentDate: new Date().toISOString(),
+            paymentStatus: 'ÖDENDİ',
+            cardBrand: 'Mastercard',
+            cardLast4: '4242',
+            cardHolder: 'Mehmet Demir',
             specialNote: 'Late check-in requested.',
             modifyUrl: 'https://calibretour.com/my-bookings/987654',
+            timezone: 'CEST',
+            safeLinkUrl: 'https://calibretour.com/security',
         },
         'flight-ticket': {
             customerName: 'Zeynep Kaya',
@@ -105,8 +116,10 @@ async function sendTest() {
             totalAmount: 12500,
             currency: 'TRY',
             paymentDate: new Date().toISOString(),
+            paymentStatus: 'ÖDENDİ',
+            cardBrand: 'Mastercard',
             cardLast4: '4242',
-            paidStatus: 'ÖDENDİ',
+            cardHolder: 'Zeynep Kaya',
             ticketUrl: 'https://calibretour.com/tickets/PNR789'
         },
     };

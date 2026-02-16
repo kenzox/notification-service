@@ -5,42 +5,117 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{t "transferReservation.title"}}</title>
+    {{> styles}}
 </head>
 
-<body
-    style="margin:0;padding:24px;background:#f5f5f5;font-family:'Montserrat', sans-serif;font-weight: 400;font-size: 14.3px;line-height: 24px;vertical-align: middle;direction:{{__meta.direction}};text-align:{{__meta.align}};">
-    <table width="100%" cellpadding="0" cellspacing="0">
-        <tr>
-            <td align="center">
-                <table width="700" cellpadding="0" cellspacing="0"
-                    style="background:#ffffff;border:1px solid #e5e5e5;border-radius:8px;">
-                    <tr>
-                        <td style="padding:24px;">
-                            <h1 style="margin:0 0 10px;color:#1a1a1a;">{{t "transferReservation.title"}}</h1>
-                            <p style="margin:0 0 16px;color:#333333;">{{t "transferReservation.confirmed"}}</p>
-                            <table width="100%" cellpadding="8" cellspacing="0"
-                                style="border:1px solid #e5e5e5;border-radius:6px;">
+<body>
+    <div class="container">
+        <center>
+            {{> header}}
+
+            <!-- Main Card -->
+            <table width="600" cellpadding="0" cellspacing="0" class="main-card">
+                <tr>
+                    <td>
+                        <!-- Title Section -->
+                        <div style="margin-bottom: 30px; text-align: left;">
+                            <h1>{{t "transferReservation.title"}}</h1>
+                            <p>{{t "transferReservation.confirmed"}}</p>
+                        </div>
+
+                        <div style="border-top: 1px solid #EEEEEE; margin-bottom: 30px;"></div>
+
+                        <!-- Transfer Details -->
+                        <h3>
+                            <!-- Truck Icon (SVG) -->
+                            <img src="https://api.iconify.design/ph:truck.svg" alt="Transfer" width="20" height="20"
+                                style="vertical-align: middle; margin-{{__meta.oppositeAlign}}: 8px;">
+                            {{t "transferReservation.title"}}
+                        </h3>
+
+                        <table class="data-table">
+                            <thead>
                                 <tr>
-                                    <td style="color:#666666;">{{t "transferReservation.pickupLocation"}}</td>
-                                    <td style="color:#111111;">{{or pickupLocation "-"}}</td>
+                                    <th style="width: 50%;">{{t "transferReservation.route"}}</th>
+                                    <th style="width: 30%;">{{t "transferReservation.vehicleType"}}</th>
+                                    <th style="width: 20%;">{{t "transferReservation.duration"}}</th>
                                 </tr>
+                            </thead>
+                            <tbody>
                                 <tr>
-                                    <td style="color:#666666;">{{t "transferReservation.dropoffLocation"}}</td>
-                                    <td style="color:#111111;">{{or dropoffLocation "-"}}</td>
+                                    <td>{{or pickupLocation "-"}} &rarr; {{or dropoffLocation "-"}}</td>
+                                    <td>{{or vehicleType "-"}}</td>
+                                    <td>{{or duration "-"}}</td>
                                 </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Passenger Information -->
+                        <h3>{{t "common.passengerInfo"}}</h3>
+                        <table class="data-table">
+                            <thead>
                                 <tr>
-                                    <td style="color:#666666;">{{t "transferReservation.date"}}</td>
-                                    <td style="color:#111111;">{{formatDate date}} {{or time pickupTime ""}}</td>
+                                    <th>{{t "common.passengerName"}}</th>
+                                    <th>{{t "common.surname"}}</th>
+                                    <th>{{t "common.birthDate"}}</th>
+                                    <th>{{t "common.nationality"}}</th>
                                 </tr>
-                            </table>
-                            <p style="margin:16px 0 0;color:#666666;">{{t "transferReservation.totalAmount"}}: <strong
-                                    style="color:#111111;">{{formatCurrency totalAmount currency}}</strong></p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+                            </thead>
+                            <tbody>
+                                {{#each passengers}}
+                                <tr>
+                                    <td>{{name}}</td>
+                                    <td>{{surname}}</td>
+                                    <td>{{birthDate}}</td>
+                                    <td>{{nationality}}</td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+
+                        <!-- Payment Details -->
+                        <h3>{{t "common.paymentDetails"}}</h3>
+                        <table class="data-table">
+                            {{#each priceItems}}
+                            <tr>
+                                <td style="width: 70%; font-weight: 500;">{{label}}</td>
+                                <td style="text-align: right; background-color: #FFFFFF;">{{formatCurrency amount
+                                    ../currency}}</td>
+                            </tr>
+                            {{/each}}
+                            <tr>
+                                <td style="background-color: #FAFAFA; color: #333333; font-weight: 700;">{{t
+                                    "common.totalPrice"}}</td>
+                                <td
+                                    style="background-color: #FAFAFA; color: #333333; font-weight: 800; text-align: right;">
+                                    {{formatCurrency totalAmount currency}}</td>
+                            </tr>
+                        </table>
+
+                        {{> payment-info}}
+
+                        <!-- Important Info Box -->
+                        <div style="background-color: #FFF8E1; border-radius: 6px; padding: 20px; margin-bottom: 30px;">
+                            <h4 style="margin: 0 0 10px; color: #6F4C0D; font-size: 16px; font-weight: 800;">
+                                {{t "common.importantInfo"}}
+                            </h4>
+                            <ul
+                                style="margin: 0; padding-{{__meta.align}}: 20px; color: #5A4318; font-size: 13px; line-height: 1.6;">
+                                <li>{{t "common.infoLine1"}}</li>
+                                <li>{{t "common.infoLine2"}}</li>
+                            </ul>
+                        </div>
+
+                        <!-- Button -->
+                        {{> button url=(or manageBookingUrl ticketUrl modifyUrl reservationUrl bookingUrl '#') text=(t "common.viewTicket") }}
+
+                    </td>
+                </tr>
+            </table>
+
+            {{> footer}}
+        </center>
+    </div>
 </body>
 
 </html>
