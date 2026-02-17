@@ -284,6 +284,8 @@
     "pnr": "PNR",
     "reservationNumber": "Rezervasyon Numarası",
     "flights": "Uçuşlar",
+    "transferInfo": "Transfer Bilgileri",
+    "transferDirection": "Yön",
     "flightNumber": "Uçuş Numarası",
     "departure": "Kalkış",
     "arrival": "Varış",
@@ -327,7 +329,9 @@
     "notes": "Notlar",
     "route": "Güzergah",
     "vehicleType": "Araç Tipi",
-    "duration": "Süre"
+    "duration": "Süre",
+    "direction": "Yön",
+    "meetingPoint": "Buluşma Noktası"
   },
   "flightDetails": {
     "title": "Flight Confirmation",

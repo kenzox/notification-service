@@ -7,6 +7,56 @@ import { LocaleService } from '@app/services/locale.service';
 const mockLocaleService = new LocaleService();
 
 function registerHelpers() {
+    const parseDateInput = (input: string | Date): Date | null => {
+        if (input instanceof Date) {
+            return Number.isNaN(input.getTime()) ? null : input;
+        }
+
+        const normalized = String(input).trim();
+        const dmyMatch = normalized.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/);
+        if (dmyMatch) {
+            const day = Number(dmyMatch[1]);
+            const month = Number(dmyMatch[2]);
+            const year = Number(dmyMatch[3]);
+            const parsed = new Date(year, month - 1, day);
+            return Number.isNaN(parsed.getTime()) ? null : parsed;
+        }
+
+        const textMatch = normalized.match(/^(\d{1,2})\s+([^\s]+)\s+(\d{4})$/);
+        if (textMatch) {
+            const monthMap: Record<string, number> = {
+                jan: 0, january: 0, ocak: 0,
+                feb: 1, february: 1, subat: 1, sub: 1,
+                mar: 2, march: 2, mart: 2,
+                apr: 3, april: 3, nisan: 3,
+                may: 4, mayis: 4,
+                jun: 5, june: 5, haziran: 5,
+                jul: 6, july: 6, temmuz: 6,
+                aug: 7, august: 7, agustos: 7,
+                sep: 8, september: 8, eylul: 8,
+                oct: 9, october: 9, ekim: 9,
+                nov: 10, november: 10, kasim: 10,
+                dec: 11, december: 11, aralik: 11,
+            };
+
+            const day = Number(textMatch[1]);
+            const monthToken = textMatch[2]
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z]/g, '');
+            const year = Number(textMatch[3]);
+            const month = monthMap[monthToken];
+            if (month !== undefined) {
+                const parsed = new Date(year, month, day);
+                return Number.isNaN(parsed.getTime()) ? null : parsed;
+            }
+        }
+
+        const parsed = new Date(normalized);
+        return Number.isNaN(parsed.getTime()) ? null : parsed;
+    };
+
     Handlebars.registerHelper('t', function (this: any, key: string, options: Handlebars.HelperOptions) {
         const rootMeta = options.data?.root?.__meta as { locale: Locale } | undefined;
         const meta = (this?.__meta || rootMeta) as { locale: Locale } | undefined;
@@ -32,11 +82,29 @@ function registerHelpers() {
 
     Handlebars.registerHelper('formatDate', function (date: string | Date) {
         if (!date) return '';
-        const d = new Date(date);
-        const day = d.getDate().toString().padStart(2, '0');
-        const month = d.toLocaleDateString('en-GB', { month: 'short' });
-        const year = d.getFullYear();
-        return `${day} ${month} ${year}`;
+        const d = parseDateInput(date);
+        if (!d) {
+            return String(date);
+        }
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${day} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    });
+
+    Handlebars.registerHelper('formatDateRange', function (value: unknown) {
+        if (value === undefined || value === null || value === '') return '';
+        const raw = String(value).trim();
+        const separator = ' - ';
+        if (!raw.includes(separator)) {
+            return Handlebars.helpers.formatDate(raw);
+        }
+
+        const [from, to] = raw.split(separator);
+        if (!from || !to) return raw;
+
+        const fromFormatted = Handlebars.helpers.formatDate(from.trim());
+        const toFormatted = Handlebars.helpers.formatDate(to.trim());
+        return `${fromFormatted} - ${toFormatted}`;
     });
 
     Handlebars.registerHelper('formatCurrency', function (amount: number, currency: string) {
@@ -74,9 +142,51 @@ function registerHelpers() {
         return '';
     });
 
+    Handlebars.registerHelper('firstValid', function (...args: any[]) {
+        const values = args.slice(0, -1);
+        for (const value of values) {
+            if (value === undefined || value === null) continue;
+            const text = String(value).trim();
+            if (!text) continue;
+            if (['-', '--', '—', 'n/a', 'na'].includes(text.toLowerCase())) continue;
+            return value;
+        }
+        return '';
+    });
+
     Handlebars.registerHelper('concat', function (...args: any[]) {
         const values = args.slice(0, -1);
         return values.map(v => (v === undefined || v === null ? '' : String(v))).join('');
+    });
+
+    Handlebars.registerHelper('guestPrefix', function (guest: unknown) {
+        if (!guest || typeof guest !== 'object' || Array.isArray(guest)) {
+            return 'Mr';
+        }
+
+        const g = guest as Record<string, unknown>;
+        const normalize = (value: unknown) => String(value ?? '').trim().toLowerCase();
+        const identityValues = [
+            normalize(g.title),
+            normalize(g.type),
+            normalize(g.passengerType),
+            normalize(g.guestType),
+        ];
+
+        if (identityValues.some(v => ['chd', 'child', 'infant', 'cnn'].includes(v))) {
+            return 'Chd';
+        }
+
+        if (identityValues.some(v => ['mrs', 'ms', 'miss', 'female'].includes(v))) {
+            return 'Mrs';
+        }
+
+        const gender = normalize(g.gender);
+        if (['f', 'female', 'woman'].includes(gender)) {
+            return 'Mrs';
+        }
+
+        return 'Mr';
     });
 
     Handlebars.registerHelper('now', function () {
@@ -263,7 +373,29 @@ const mockDataMap: Record<string, any> = {
                 arrivalDate: '2025-08-10',
                 arrivalTime: '14:30',
                 duration: '11h 00m',
-                cabinClass: 'Economy'
+                cabinClass: 'Economy',
+                terminal: '1',
+                luggageAllowance: '2x23kg',
+                handBaggage: '8kg'
+            },
+            {
+                airlineName: 'Turkish Airlines',
+                flightNumber: 'TK1235',
+                originCity: 'New York',
+                originCode: 'JFK',
+                originAirportName: 'John F. Kennedy International Airport',
+                destinationCity: 'Istanbul',
+                destinationCode: 'IST',
+                destinationAirportName: 'Istanbul Airport',
+                departureDate: '2025-08-17',
+                departureTime: '20:30',
+                arrivalDate: '2025-08-18',
+                arrivalTime: '12:30',
+                duration: '10h 00m',
+                cabinClass: 'Economy',
+                terminal: '4',
+                luggageAllowance: '2x23kg',
+                handBaggage: '8kg'
             }
         ],
         passengers: [
@@ -359,10 +491,35 @@ const mockDataMap: Record<string, any> = {
             dates: '02.08.2025 - 09.08.2025',
             code: '250802TLVRH002007'
         },
+        transfers: [
+            {
+                direction: 'Departure',
+                route: 'RHO -> MRM',
+                vehicleType: 'SIC & FERRY',
+                duration: '60 dk',
+                pickupDate: '2025-08-02',
+                pickupTime: '12:30',
+                pickupLocation: 'Rhodes Port',
+                dropoffLocation: 'Marmaris Port',
+                passengerCount: 9
+            },
+            {
+                direction: 'Return',
+                route: 'MRM -> RHO',
+                vehicleType: 'SIC & FERRY',
+                duration: '60 dk',
+                pickupDate: '2025-08-09',
+                pickupTime: '13:30',
+                pickupLocation: 'Marmaris Port',
+                dropoffLocation: 'Rhodes Port',
+                passengerCount: 9
+            }
+        ],
         rooms: [
             {
                 label: 'Oda 1',
-                type: 'STANDARD ROOM SEA VIEW',
+                type: 'STANDARD DOUBLE ROOM',
+                boardType: 'ALL INCLUSIVE',
                 accommodation: 'İKİ YETİŞKİN',
                 guests: [
                     { name: 'ADAM ABED', gender: 'Male', birthDate: '18.06.2007', nationality: 'Israel', passport: '36221407', expire: '01.01.2027' },
@@ -372,17 +529,19 @@ const mockDataMap: Record<string, any> = {
             },
             {
                 label: 'Oda 2',
-                type: 'STANDARD ROOM LAND VIEW',
+                type: 'FAMILY SUITE',
+                boardType: 'ALL INCLUSIVE',
                 accommodation: 'İKİ YETİŞKİN',
                 guests: [
                     { name: 'TASNIM ZOABI', gender: 'Female', birthDate: '07.08.1995', nationality: 'Israel', passport: '40341904', expire: '01.01.2027' },
-                    { name: 'DAHER ZOABI', gender: 'Male', birthDate: '25.03.1952', nationality: 'Israel', passport: '32120873', expire: '01.01.2027' }
+                    { name: 'DAHER ZOABI', type: 'Child', gender: 'Male', birthDate: '25.03.2017', nationality: 'Israel', passport: '32120873', expire: '01.01.2027' }
                 ],
                 contact: 'sisilia@4seasons.co.il | 972522976719'
             },
             {
                 label: 'Oda 3',
                 type: 'STANDARD ROOM LAND VIEW',
+                boardType: 'FULL',
                 accommodation: 'İKİ YETİŞKİN + BEBEK',
                 guests: [
                     { name: 'SAWSAN ZOUBI', gender: 'Male', birthDate: '27.02.1960', nationality: 'Israel', passport: '40341963', expire: '01.01.2027' },
@@ -408,6 +567,32 @@ const mockDataMap: Record<string, any> = {
         duration: '20 min',
         passengerCount: 1,
         date: '2025-07-26',
+        time: '14:30',
+        meetingPoint: 'Airport Exit Gate',
+        transfers: [
+            {
+                direction: 'Departure',
+                pickupLocation: 'Calibre Tour',
+                dropoffLocation: 'Travel',
+                vehicleType: 'VIP Minibus',
+                duration: '20 min',
+                pickupDate: '2025-07-26',
+                pickupTime: '14:30',
+                meetingPoint: 'Airport Exit Gate',
+                passengerCount: 1
+            },
+            {
+                direction: 'Return',
+                pickupLocation: 'Travel',
+                dropoffLocation: 'Calibre Tour',
+                vehicleType: 'VIP Minibus',
+                duration: '25 min',
+                pickupDate: '2025-08-02',
+                pickupTime: '11:00',
+                meetingPoint: 'Hotel Lobby',
+                passengerCount: 1
+            }
+        ],
         passengers: [
             { name: 'DENIZ', surname: 'KEMAHLIOGLU', birthDate: '22 Aralık 1999', nationality: 'Turkey' }
         ],

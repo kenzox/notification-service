@@ -241,6 +241,8 @@
     "pnr": "PNR",
     "reservationNumber": "Reservation Number",
     "flights": "Flights",
+    "transferInfo": "Transfer Details",
+    "transferDirection": "Direction",
     "flightNumber": "Flight Number",
     "departure": "Departure",
     "arrival": "Arrival",
@@ -284,7 +286,9 @@
     "notes": "Notes",
     "route": "Route",
     "vehicleType": "Vehicle Type",
-    "duration": "Duration"
+    "duration": "Duration",
+    "direction": "Direction",
+    "meetingPoint": "Meeting Point"
   },
   "flightDetails": {
     "title": "Flight Confirmation",

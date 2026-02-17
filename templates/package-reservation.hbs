@@ -18,237 +18,276 @@
                 <tr>
                     <td>
 
-                        <!-- Reservation Info Strip -->
-                        <table width="100%" cellpadding="0" cellspacing="0"
-                            style="margin-bottom: 30px; border-bottom: 1px solid #EEEEEE; padding-bottom: 20px;">
+
+                        <!-- Greeting -->
+                        <h2 style="margin: 0 0 16px;">
+                            {{t "hotelReservation.greeting" guestName=(or customerName contactName rooms.[0].guestName rooms.[0].guests.[0].name rooms.[0].guests.[0].firstName "Guest") hotelCity=(or hotelName hotel.name hotelCity city destination)}}
+                        </h2>
+
+                        <!-- Booking Summary Notes -->
+                        <div
+                            style="margin: 0 0 22px; border: 1px solid #E0E0E0; border-radius: 8px; background-color: #F5F5F5; padding: 12px 14px;">
+                            <ul style="margin: 0; padding: 0; list-style: none;">
+                            <li style="margin: 0 0 8px; font-size: 14px; color: #333333; line-height: 1.45;">
+                                <span
+                                    style="display: inline-block; width: 18px; color: #34A853; font-weight: 700;">&#10003;</span>
+                                {{t "hotelReservation.checklist1" hotelName=(or hotelName hotel.name "-") checkInDate=(formatDate
+                                (or checkInDate startDate hotel.checkInDate flights.[0].date flights.[0].departureDate))}}
+                            </li>
+                            <li style="margin: 0 0 8px; font-size: 14px; color: #333333; line-height: 1.45;">
+                                <span
+                                    style="display: inline-block; width: 18px; color: #34A853; font-weight: 700;">&#10003;</span>
+                                {{t "hotelReservation.checklist2"}}
+                            </li>
+                            <li style="margin: 0 0 8px; font-size: 14px; color: #333333; line-height: 1.45;">
+                                <span style="display: inline-block; width: 18px; color: #777777;">&#128274;</span>
+                                {{t "hotelReservation.checklist3"}}
+                            </li>
+                            {{#if (or freeCancellationUntil cancellationUntil freeCancellationDate)}}
+                            <li style="margin: 0; font-size: 14px; color: #34A853; line-height: 1.45; font-weight: 600;">
+                                <span
+                                    style="display: inline-block; width: 18px; color: #34A853; font-weight: 700;">&#10003;</span>
+                                {{t "hotelReservation.checklist4" freeCancellationDate=(formatDate (or
+                                freeCancellationUntil cancellationUntil freeCancellationDate)) freeCancellationTime=(or
+                                freeCancellationTime "23:59") timezone=(or timezone "CEST")}}
+                            </li>
+                            {{/if}}
+                            </ul>
+                        </div>
+
+                        <!-- Travel Summary (Package Specific) -->
+                        {{#if flights}}
+                        <h3 style="font-size: 16px; margin: 0 0 12px;">
+                            <img src="https://api.iconify.design/ph:airplane-tilt.svg" width="20" height="20"
+                                style="vertical-align: middle; margin-{{__meta.oppositeAlign}}: 8px;">
+                            {{t "packageReservation.flights"}}
+                        </h3>
+                        <table class="data-table" style="margin-bottom: 18px;">
+                            {{#each flights}}
                             <tr>
-                                <td valign="top" style="width: 25%; padding-right: 10px;">
-                                    <p
-                                        style="margin: 0 0 5px; font-size: 11px; font-weight: 700; color: #000000; text-transform: uppercase;">
-                                        {{t "packageReservation.reservationNumber"}}</p>
-                                    <p style="margin: 0; font-size: 13px; color: #666666;">{{reservationNumber}}</p>
+                                <td style="width: 35%; color: #777777; font-size: 13px;">
+                                    {{#if @first}}{{t "flightTicket.departure"}}{{else}}{{t "flightTicket.return"}}{{/if}}
                                 </td>
-                                <td valign="top" style="width: 25%; padding-right: 10px;">
-                                    <p
-                                        style="margin: 0 0 5px; font-size: 11px; font-weight: 700; color: #000000; text-transform: uppercase;">
-                                        {{t "common.status"}}</p>
-                                    <p style="margin: 0; font-size: 13px; color: #FF6200; font-weight: 600;">
-                                        {{status}}</p>
+                                <td style="color: #333333; font-size: 13px;">
+                                    <div style="font-weight: 700;">
+                                        {{or flightNumber flightNo flightCode code "-"}} - {{or airline airlineName carrier "-"}}
+                                    </div>
+                                    <div style="font-size: 12px; color: #666666;">
+                                        {{or (formatDate (or date departureDate flightDate)) "-"}} |
+                                        {{or departure (or originCity from originCode "-")}} &rarr; {{or arrival (or destinationCity to destinationCode "-")}}
+                                    </div>
                                 </td>
-                                <td valign="top" style="width: 25%; padding-right: 10px;">
-                                    <p
-                                        style="margin: 0 0 5px; font-size: 11px; font-weight: 700; color: #000000; text-transform: uppercase;">
-                                        {{t "common.passengerCount"}}</p>
-                                    <p style="margin: 0; font-size: 13px; color: #666666;">{{passengerCount}}</p>
+                            </tr>
+                            {{/each}}
+                        </table>
+                        {{/if}}
+
+                        {{#if (or transfers transferDetails transferList)}}
+                        <h3 style="font-size: 16px; margin: 0 0 12px;">
+                            <img src="https://api.iconify.design/ph:truck.svg" width="20" height="20"
+                                style="vertical-align: middle; margin-{{__meta.oppositeAlign}}: 8px;">
+                            {{t "packageReservation.transferInfo"}}
+                        </h3>
+                        <table class="data-table" style="margin-bottom: 22px;">
+                            {{#each (or transfers transferDetails transferList)}}
+                            <tr>
+                                <td style="width: 35%; color: #777777; font-size: 13px;">
+                                    {{#if direction}}
+                                    {{direction}}
+                                    {{else}}
+                                    {{#if @first}}{{t "flightTicket.departure"}}{{else}}{{t "flightTicket.return"}}{{/if}}
+                                    {{/if}}
                                 </td>
-                                <td valign="top" style="width: 25%;">
-                                    <p
-                                        style="margin: 0 0 5px; font-size: 11px; font-weight: 700; color: #000000; text-transform: uppercase;">
-                                        {{t "common.reservationDate"}}</p>
-                                    <p style="margin: 0; font-size: 13px; color: #666666;">{{reservationDate}}</p>
+                                <td style="color: #333333; font-size: 13px;">
+                                    <div style="font-weight: 700;">
+                                        {{or route (concat (or pickupLocation from origin "-") " → " (or dropoffLocation to destination "-"))}}
+                                    </div>
+                                    <div style="font-size: 12px; color: #666666;">
+                                        {{or vehicleType vehicle "-"}}{{#if (or duration transferDuration)}} | {{or duration transferDuration}}{{/if}}{{#if (or pickupDate date)}} | {{formatDate (or pickupDate date)}}{{/if}}
+                                    </div>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </table>
+                        {{/if}}
+
+                        <!-- Hotel Name Header Area -->
+                        <h3 style="font-size: 20px; margin: 0 0 6px; line-height: 1.35;">{{or hotelName hotel.name destination city "-"}}</h3>
+                        <p style="font-weight: 700; color: #333333; margin: 0 0 20px;">{{t
+                            "hotelReservation.reservationDetails"}}</p>
+
+                        <!-- Reservation Details Table -->
+                        <table class="data-table">
+                            <tr>
+                                <td style="width: 35%; color: #777777; font-size: 13px;">
+                                    {{t "hotelReservation.calibreConfirmation"}}</td>
+                                <td style="color: #FF6200; font-size: 13px; font-weight: 700;">
+                                    {{or reservationNumber confirmNumber confirmationNumber "-"}}</td>
+                            </tr>
+                            <tr>
+                                <td style="color: #777777; font-size: 13px;">
+                                    {{t "hotelReservation.checkInDate"}}</td>
+                                <td style="color: #333333; font-size: 13px;">
+                                    <strong>{{or (formatDate (or checkInDate startDate hotel.checkInDate flights.[0].date flights.[0].departureDate)) "-"}}</strong> ({{or checkInTime "14:00"}})
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="color: #777777; font-size: 13px;">
+                                    {{t "hotelReservation.checkOutDate"}}</td>
+                                <td style="color: #333333; font-size: 13px;">
+                                    <strong>{{or (formatDate (or checkOutDate endDate hotel.checkOutDate flights.[1].date flights.[1].departureDate)) "-"}}</strong> ({{or checkOutTime "12:00"}})
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="color: #777777; font-size: 13px;">
+                                    {{t "hotelReservation.reservation"}}</td>
+                                <td style="color: #333333; font-size: 13px;">
+                                    {{#if reservationSummary}}
+                                    {{#each reservationSummary}}
+                                    <div>{{count}} x {{name}}</div>
+                                    {{/each}}
+                                    {{else}}
+                                    {{#if rooms}}
+                                    {{#each rooms}}
+                                    <div>1 x {{or type roomTypeName label "-"}}</div>
+                                    {{/each}}
+                                    {{else}}
+                                    <div>{{or roomCount "-"}} x {{or roomType "-"}}</div>
+                                    {{/if}}
+                                    {{/if}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="color: #777777; font-size: 13px; vertical-align: top;">
+                                    {{t "hotelReservation.bookedFor"}}</td>
+                                <td style="color: #333333; font-size: 13px;">
+                                    <table width="100%" cellpadding="0" cellspacing="0">
+                                        {{#each rooms}}
+                                        <tr>
+                                            <td
+                                                style="padding: 5px 0; border-bottom: {{#unless @last}}1px solid #F3F4F6{{else}}none{{/unless}};">
+                                                <div style="font-weight: 700; color: #FF6200; margin-bottom: 4px;">
+                                                    {{t "hotelReservation.roomLabel"}} {{add @index 1}}</div>
+                                                <div style="margin-bottom: 2px;">
+                                                    <strong>{{or type roomTypeName}}</strong>{{#if (or mealPlan boardType pensionType ../hotel.boardType)}} - {{or mealPlan boardType pensionType ../hotel.boardType}}{{/if}}
+                                                </div>
+                                                <div style="font-size: 12px; color: #666666;">
+                                                    {{#if guestName}}
+                                                    {{guestName}}
+                                                    {{else}}
+                                                    {{#if guests}}
+                                                    {{#each guests}}{{#if @index}}, {{/if}}{{guestPrefix this}} {{or name (concat (or firstName "") " " (or lastName ""))}}{{/each}}
+                                                    {{else}}
+                                                    -
+                                                    {{/if}}
+                                                    {{/if}}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {{/each}}
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="color: #777777; font-size: 13px;">
+                                    {{t "hotelReservation.address"}}</td>
+                                <td style="color: #333333; font-size: 13px;">
+                                    {{or hotelAddress hotelLocation hotel.address hotel.name "-"}}</td>
+                            </tr>
+                            <tr>
+                                <td style="color: #777777; font-size: 13px;">
+                                    {{t "hotelReservation.phone"}}</td>
+                                <td style="color: #FF6200; font-size: 13px; font-weight: 700;">
+                                    {{or hotelPhone hotel.phone "-"}}</td>
+                            </tr>
+                            <tr>
+                                <td style="color: #777777; font-size: 13px;">
+                                    {{t "hotelReservation.contactEmail"}}</td>
+                                <td style="color: #FF6200; font-size: 13px; font-weight: 700;">
+                                    {{#if (or hotelEmail hotel.email)}}
+                                    <a href="mailto:{{or hotelEmail hotel.email}}"
+                                        style="color: #FF6200; text-decoration: none;">{{or hotelEmail hotel.email}}</a>
+                                    {{else}}-{{/if}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="color: #777777; font-size: 13px;">
+                                    {{t "hotelReservation.cancellationPolicy"}}</td>
+                                <td style="color: #333333; font-size: 12px; line-height: 1.5;">
+                                    {{or cancelPolicy cancellationPolicy hotel.cancellationPolicy "-"}}</td>
+                            </tr>
+                            <tr>
+                                <td style="color: #777777; font-size: 13px;">{{t
+                                    "hotelReservation.cancellationCost"}}</td>
+                                <td style="color: #333333; font-size: 13px;">
+                                    {{#if (or cancelFees cancellationDetails)}}
+                                    <ul style="margin: 0; padding: 0 0 0 15px;">
+                                        {{#each (or cancelFees cancellationDetails)}}
+                                        <li>{{#if condition}}{{condition}}: {{fee}}{{else}}{{this}}{{/if}}</li>
+                                        {{/each}}
+                                    </ul>
+                                    {{else}}
+                                    -
+                                    {{/if}}
+                                    <p style="font-size: 11px; color: #777777; margin: 10px 0 0;">Times shown are in
+                                        the property's timezone.</p>
                                 </td>
                             </tr>
                         </table>
 
-                        <!-- Flights Section -->
-                        <h3 style="color: #000000; font-size: 16px; font-weight: 700; margin: 0 0 15px;">
-                            <img src="https://api.iconify.design/ph:airplane-tilt.svg" alt="Flight" width="20"
-                                height="20" style="vertical-align: middle; margin-right: 8px;">
-                            {{t "packageReservation.flights"}}
-                        </h3>
-                        <table width="100%" cellpadding="0" cellspacing="0"
-                            style="border: 1px solid #E0E0E0; border-radius: 8px; border-spacing: 0; overflow: hidden; margin-bottom: 30px; width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th
-                                        style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
-                                        {{t "packageReservation.date"}}</th>
-                                    <th
-                                        style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
-                                        {{t "packageReservation.flightNumber"}}</th>
-                                    <th
-                                        style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
-                                        {{t "packageReservation.departure"}}</th>
-                                    <th
-                                        style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
-                                        {{t "packageReservation.arrival"}}</th>
-                                    <th
-                                        style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
-                                        {{t "packageReservation.airline"}}</th>
-                                    <th
-                                        style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
-                                        {{t "packageReservation.duration"}}</th>
-                                    <th
-                                        style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
-                                        {{t "packageReservation.baggage"}}</th>
-                                    <th
-                                        style="background-color: #F9F9F9; padding: 8px 12px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; text-align: left;">
-                                        {{t "packageReservation.cabinBaggage"}}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{#each flights}}
-                                <tr>
-                                    <td
-                                        style="padding: 6px 8px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; white-space: nowrap;">
-                                        {{date}}</td>
-                                    <td
-                                        style="padding: 6px 8px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0;">
-                                        {{flightNumber}}</td>
-                                    <td
-                                        style="padding: 6px 8px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; white-space: nowrap;">
-                                        {{departure}}</td>
-                                    <td
-                                        style="padding: 6px 8px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; white-space: nowrap;">
-                                        {{arrival}}</td>
-                                    <td
-                                        style="padding: 6px 8px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0;">
-                                        {{airline}}</td>
-                                    <td
-                                        style="padding: 6px 8px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0;">
-                                        {{duration}}</td>
-                                    <td
-                                        style="padding: 6px 8px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0;">
-                                        {{baggage}}</td>
-                                    <td
-                                        style="padding: 6px 8px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0;">
-                                        {{cabinBaggage}}</td>
-                                </tr>
-                                {{/each}}
-                            </tbody>
+                        <!-- Price Details Section -->
+                        <p style="font-size: 14px; color: #333333; font-weight: 700; margin: 24px 0 12px;">{{t
+                            "hotelReservation.priceDetails"}}</p>
+                        <table class="data-table">
+                            {{#if priceItems}}
+                            {{#each priceItems}}
+                            <tr>
+                                <td style="color: #666666; font-size: 13px;">
+                                    {{or label description (t "hotelReservation.roomFee")}}</td>
+                                <td style="text-align: right; color: #333333; font-size: 13px;">
+                                    {{formatCurrency amount ../currency}}</td>
+                            </tr>
+                            {{/each}}
+                            {{else}}
+                            <tr>
+                                <td style="color: #666666; font-size: 13px;">{{t
+                                    "hotelReservation.roomFee"}}</td>
+                                <td style="text-align: right; color: #333333; font-size: 13px;">
+                                    {{formatCurrency (or accommodationFee packageFee totalAmount) currency}}</td>
+                            </tr>
+                            {{/if}}
+                            {{#if vatAmount}}
+                            <tr>
+                                <td style="color: #666666; font-size: 13px;">{{t "hotelReservation.vatAmount"}}</td>
+                                <td style="text-align: right; color: #333333; font-size: 13px;">
+                                    {{formatCurrency vatAmount currency}}</td>
+                            </tr>
+                            {{/if}}
+                            <tr style="background-color: #FAFAFA;">
+                                <td style="color: #333333; font-size: 16px; font-weight: 800;">{{t
+                                    "packageReservation.totalAmount"}}</td>
+                                <td style="text-align: right; color: #333333; font-size: 18px; font-weight: 800;">
+                                    {{formatCurrency totalAmount currency}}</td>
+                            </tr>
                         </table>
 
-                        <!-- Hotel Section -->
-                        <h3 style="color: #000000; font-size: 16px; font-weight: 700; margin: 0 0 15px;">
-                            <img src="https://api.iconify.design/ph:buildings.svg" alt="Hotel" width="20" height="20"
-                                style="vertical-align: middle; margin-right: 8px;">
-                            {{t "packageReservation.accommodationInfo"}}
-                        </h3>
-                        <div
-                            style="border: 1px solid #E0E0E0; background-color: #F9F9F9; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
-                            <p style="margin: 0 0 5px; font-size: 14px; font-weight: 800; color: #000000;">
-                                {{hotel.name}}</p>
-                            <p style="margin: 0 0 5px; font-size: 14px; color: #333333;">{{hotel.dates}}</p>
-                            <p style="margin: 0; font-size: 13px; color: #666666;">{{t "packageReservation.code"}}:
-                                {{hotel.code}}</p>
-                        </div>
+                        {{> payment-info}}
 
-                        <!-- Guests Section -->
-                        <h3 style="color: #000000; font-size: 16px; font-weight: 700; margin: 0 0 15px;">
-                            {{t "packageReservation.guests"}}
-                        </h3>
-
-                        {{#each rooms}}
-                        <div style="border: 1px solid #E0E0E0; border-radius: 8px; margin-bottom: 20px; padding: 20px;">
-                            <h4 style="margin: 0 0 15px; font-size: 14px; font-weight: 700; color: #000000;">
-                                {{label}}</h4>
-
-                            <div style="margin-bottom: 15px;">
-                                <p style="margin: 0 0 5px; font-size: 13px; color: #666666;">
-                                    <img src="https://api.iconify.design/ph:bed.svg" width="16" height="16"
-                                        style="vertical-align: middle; margin-right: 5px;">
-                                    <strong>{{t "packageReservation.roomType"}}:</strong> {{type}}
-                                </p>
-                                <p style="margin: 0; font-size: 13px; color: #666666;">
-                                    <img src="https://api.iconify.design/ph:users.svg" width="16" height="16"
-                                        style="vertical-align: middle; margin-right: 5px;">
-                                    <strong>{{t "packageReservation.accommodationType"}}:</strong> {{accommodation}}
-                                </p>
-                            </div>
-
-                            <table width="100%" cellpadding="0" cellspacing="0"
-                                style="border: 1px solid #E0E0E0; border-radius: 8px; border-spacing: 0; overflow: hidden; width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th
-                                            style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
-                                            {{t "common.nameSurname"}}</th>
-                                        <th
-                                            style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
-                                            {{t "common.gender"}}</th>
-                                        <th
-                                            style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
-                                            {{t "common.birthDate"}}</th>
-                                        <th
-                                            style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
-                                            {{t "common.nationality"}}</th>
-                                        <th
-                                            style="background-color: #F9F9F9; padding: 6px 8px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; text-align: left;">
-                                            {{t "common.passportNumber"}}</th>
-                                        <th
-                                            style="background-color: #F9F9F9; padding: 8px 12px; font-weight: 700; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; text-align: left;">
-                                            {{t "common.passportExpiry"}}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {{#each guests}}
-                                    <tr>
-                                        <td
-                                            style="padding: 10px 12px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0;">
-                                            {{name}}</td>
-                                        <td
-                                            style="padding: 10px 12px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0;">
-                                            {{gender}}</td>
-                                        <td
-                                            style="padding: 10px 12px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0;">
-                                            {{birthDate}}</td>
-                                        <td
-                                            style="padding: 10px 12px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0;">
-                                            {{nationality}}</td>
-                                        <td
-                                            style="padding: 10px 12px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0;">
-                                            {{passport}}</td>
-                                        <td
-                                            style="padding: 6px 8px; color: #000000; font-size: 12px; border-bottom: 1px solid #E0E0E0;">
-                                            {{expire}}</td>
-                                    </tr>
-                                    {{/each}}
-                                </tbody>
-                            </table>
-                            {{#if contact}}
-                            <div style="margin-top: 10px; font-size: 12px; color: #666666;">
-                                <img src="https://api.iconify.design/ph:phone.svg" width="14" height="14"
-                                    style="vertical-align: middle; margin-right: 4px;">
-                                {{contact}}
-                            </div>
-                            {{/if}}
-                        </div>
-                        {{/each}}
-
-                        <!-- Payment Info Box -->
-                        <div style="margin-top: 30px;">
-                            {{> payment-info}}
-                        </div>
-
-                        <!-- Flight Rules Box -->
-                        <div style="background-color: #FFF8E1; border-radius: 6px; padding: 20px; margin-bottom: 30px;">
-                            <h4 style="margin: 0 0 10px; color: #6F4C0D; font-size: 16px; font-weight: 800;">
-                                {{t "packageReservation.flightRules"}}
-                            </h4>
-                            <ul
-                                style="margin: 0; padding-{{__meta.align}}: 20px; color: #5A4318; font-size: 13px; line-height: 1.6;">
-                                <li>{{t "packageReservation.rule1"}}</li>
-                                <li>{{t "packageReservation.rule2"}}</li>
-                                <li>{{t "packageReservation.rule3"}}</li>
-                                <li>{{t "packageReservation.rule4"}}</li>
-                                <li>{{t "packageReservation.rule5"}}</li>
-                                <li>{{t "packageReservation.rule6"}}</li>
-                                <li>{{t "packageReservation.rule7"}}</li>
-                                <li>{{t "packageReservation.rule8"}}</li>
-                            </ul>
-                        </div>
+                        {{> stay-safe-online}}
+                        {{#if (or specialNote notes)}}
+                        <p style="font-size: 14px; color: #333333; font-weight: 700; margin: 25px 0 10px;">{{t
+                            "hotelReservation.specialNote"}}</p>
+                        <p style="font-size: 13px; color: #666666; margin: 0 0 30px;">{{or specialNote notes}}</p>
+                        {{/if}}
 
                         <!-- Button -->
                         {{> button url=(or manageBookingUrl ticketUrl modifyUrl reservationUrl bookingUrl '#') text=(t "common.viewTicket") }}
-
 
                     </td>
                 </tr>
             </table>
 
-            <!-- Footer -->
             {{> footer}}
-
         </center>
     </div>
 </body>

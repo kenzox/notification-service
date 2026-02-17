@@ -219,6 +219,25 @@ const mockDataMap: Record<string, any> = {
                 airlineName: 'Turkish Airlines',
                 flightNumber: 'TK1234',
                 duration: '11h 00m',
+                terminal: '1',
+                luggageAllowance: '2x23kg',
+                handBaggage: '8kg'
+            },
+            {
+                departureTime: '20:30',
+                departureDate: '2025-08-17',
+                originCity: 'New York',
+                originCode: 'JFK',
+                originAirportName: 'John F. Kennedy International Airport',
+                arrivalTime: '12:30',
+                arrivalDate: '2025-08-18',
+                destinationCity: 'Istanbul',
+                destinationCode: 'IST',
+                destinationAirportName: 'Istanbul Airport',
+                airlineName: 'Turkish Airlines',
+                flightNumber: 'TK1235',
+                duration: '10h 00m',
+                terminal: '4',
                 luggageAllowance: '2x23kg',
                 handBaggage: '8kg'
             }
@@ -309,10 +328,35 @@ const mockDataMap: Record<string, any> = {
             code: '250802TLVRH002007',
             rating: '5 Star'
         },
+        transfers: [
+            {
+                direction: 'Departure',
+                route: 'RHO -> MRM',
+                vehicleType: 'SIC & FERRY',
+                duration: '60 dk',
+                pickupDate: '2025-08-02',
+                pickupTime: '12:30',
+                pickupLocation: 'Rhodes Port',
+                dropoffLocation: 'Marmaris Port',
+                passengerCount: 4
+            },
+            {
+                direction: 'Return',
+                route: 'MRM -> RHO',
+                vehicleType: 'SIC & FERRY',
+                duration: '60 dk',
+                pickupDate: '2025-08-09',
+                pickupTime: '13:30',
+                pickupLocation: 'Marmaris Port',
+                dropoffLocation: 'Rhodes Port',
+                passengerCount: 4
+            }
+        ],
         rooms: [
             {
                 label: 'Room 1',
-                type: 'STANDARD ROOM SEA VIEW',
+                type: 'STANDARD DOUBLE ROOM',
+                boardType: 'ALL INCLUSIVE',
                 accommodation: '2 Adults',
                 guests: [
                     { name: 'ADAM ABED', gender: 'Male', birthDate: '18.06.2007', nationality: 'Israel', passport: '36221407', expire: '01.01.2027' },
@@ -322,11 +366,12 @@ const mockDataMap: Record<string, any> = {
             },
             {
                 label: 'Room 2',
-                type: 'STANDARD ROOM LAND VIEW',
+                type: 'FAMILY SUITE',
+                boardType: 'ALL INCLUSIVE',
                 accommodation: '2 Adults',
                 guests: [
                     { name: 'SARA ABED', gender: 'Female', birthDate: '10.05.1985', nationality: 'Israel', passport: '36221408', expire: '01.01.2027' },
-                    { name: 'LAYLA ABED', gender: 'Female', birthDate: '15.08.2010', nationality: 'Israel', passport: '35523211', expire: '01.01.2027' }
+                    { name: 'LAYLA ABED', type: 'Child', gender: 'Female', birthDate: '15.08.2010', nationality: 'Israel', passport: '35523211', expire: '01.01.2027' }
                 ],
                 contact: 'sisilia@4seasons.co.il | 972522976719'
             }
@@ -349,6 +394,31 @@ const mockDataMap: Record<string, any> = {
         passengerCount: 3,
         date: '2025-07-26',
         time: '14:30',
+        meetingPoint: 'Airport Exit Gate',
+        transfers: [
+            {
+                direction: 'Departure',
+                pickupLocation: 'Antalya Airport (AYT)',
+                dropoffLocation: 'Antalya Resort & Spa',
+                vehicleType: 'VIP Minibus',
+                duration: '45 min',
+                pickupDate: '2025-07-26',
+                pickupTime: '14:30',
+                meetingPoint: 'Airport Exit Gate',
+                passengerCount: 3
+            },
+            {
+                direction: 'Return',
+                pickupLocation: 'Antalya Resort & Spa',
+                dropoffLocation: 'Antalya Airport (AYT)',
+                vehicleType: 'VIP Minibus',
+                duration: '40 min',
+                pickupDate: '2025-08-02',
+                pickupTime: '10:00',
+                meetingPoint: 'Hotel Lobby',
+                passengerCount: 3
+            }
+        ],
         flightNumber: 'TK1234',
         passengers: [
             { name: 'DENIZ', surname: 'KEMAHLIOGLU', birthDate: '22.12.1999', nationality: 'Turkey' },

@@ -157,6 +157,10 @@ curl -X POST http://localhost:3000/api/email/welcome \
 ## Template Yapısı
 Tüm şablonlar `templates/partials/` altındaki ortak bileşenleri (header, footer, styles, button) kullanır. Bu sayede tasarım bütünlüğü sağlanır.
 
+Not:
+- `package-reservation.hbs`, `hotel-reservation.hbs` ile aynı ana iskeleti kullanır.
+- Paket şablonunda otel detaylarının üstünde ek olarak uçuş özeti ve (veri varsa) transfer özeti bulunur.
+
 ```
 templates/
 ├── assets/
@@ -223,7 +227,9 @@ locales/
 | `equalsIgnoreCase` | `{{#if (equalsIgnoreCase a b)}}...{{/if}}` | Büyük/küçük harf duyarsız eşitlik |
 | `add` | `{{add a b}}` | Sayısal toplama |
 | `or` | `{{or a b "fallback"}}` | İlk dolu değeri döndürür |
+| `firstValid` | `{{firstValid a b c}}` | Placeholder (`-`, `--`, `N/A`) olmayan ilk değeri döndürür |
 | `concat` | `{{concat a "-" b}}` | String birleştirir |
+| `guestPrefix` | `{{guestPrefix guest}}` | İsim başına `Mr/Mrs/Chd` prefix üretir |
 | `safe` | `{{safe deger "alan"}}` | Eksik alanları loglar |
 
 ## Kalite Kontrolleri

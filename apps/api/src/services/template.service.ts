@@ -21,6 +21,55 @@ export class TemplateService {
 
     private registerHelpers(): void {
         const localeService = this.localeService;
+        const parseDateInput = (input: string | Date): Date | null => {
+            if (input instanceof Date) {
+                return Number.isNaN(input.getTime()) ? null : input;
+            }
+
+            const normalized = String(input).trim();
+            const dmyMatch = normalized.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/);
+            if (dmyMatch) {
+                const day = Number(dmyMatch[1]);
+                const month = Number(dmyMatch[2]);
+                const year = Number(dmyMatch[3]);
+                const parsed = new Date(year, month - 1, day);
+                return Number.isNaN(parsed.getTime()) ? null : parsed;
+            }
+
+            const textMatch = normalized.match(/^(\d{1,2})\s+([^\s]+)\s+(\d{4})$/);
+            if (textMatch) {
+                const monthMap: Record<string, number> = {
+                    jan: 0, january: 0, ocak: 0,
+                    feb: 1, february: 1, subat: 1, sub: 1,
+                    mar: 2, march: 2, mart: 2,
+                    apr: 3, april: 3, nisan: 3,
+                    may: 4, mayis: 4,
+                    jun: 5, june: 5, haziran: 5,
+                    jul: 6, july: 6, temmuz: 6,
+                    aug: 7, august: 7, agustos: 7,
+                    sep: 8, september: 8, eylul: 8,
+                    oct: 9, october: 9, ekim: 9,
+                    nov: 10, november: 10, kasim: 10,
+                    dec: 11, december: 11, aralik: 11,
+                };
+
+                const day = Number(textMatch[1]);
+                const monthToken = textMatch[2]
+                    .toLowerCase()
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .replace(/[^a-z]/g, '');
+                const year = Number(textMatch[3]);
+                const month = monthMap[monthToken];
+                if (month !== undefined) {
+                    const parsed = new Date(year, month, day);
+                    return Number.isNaN(parsed.getTime()) ? null : parsed;
+                }
+            }
+
+            const parsed = new Date(normalized);
+            return Number.isNaN(parsed.getTime()) ? null : parsed;
+        };
 
         // Translation helper: {{t "welcome.title"}} or {{t "key" name=value}}
         Handlebars.registerHelper('t', function (this: any, key: string, options: Handlebars.HelperOptions) {
@@ -60,12 +109,33 @@ export class TemplateService {
                 logger.warn('formatDate helper received undefined date');
                 return '';
             }
-            const intlLocale = 'en-GB'; // Enforce the format: 7 July 2025
-            const d = new Date(date);
-            const day = d.getDate().toString();
-            const month = d.toLocaleDateString(intlLocale, { month: 'short' });
-            const year = d.getFullYear();
-            return `${day} ${month} ${year}`;
+            const d = parseDateInput(date);
+            if (!d) {
+                return String(date);
+            }
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${day} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        });
+
+        Handlebars.registerHelper('formatDateRange', function (this: Record<string, unknown>, value: unknown) {
+            if (value === undefined || value === null || value === '') {
+                return '';
+            }
+            const raw = String(value).trim();
+            const separator = ' - ';
+            if (!raw.includes(separator)) {
+                return Handlebars.helpers.formatDate.call(this, raw);
+            }
+
+            const [from, to] = raw.split(separator);
+            if (!from || !to) {
+                return raw;
+            }
+
+            const fromFormatted = Handlebars.helpers.formatDate.call(this, from.trim());
+            const toFormatted = Handlebars.helpers.formatDate.call(this, to.trim());
+            return `${fromFormatted} - ${toFormatted}`;
         });
 
         // Locale-aware currency formatting
@@ -108,10 +178,60 @@ export class TemplateService {
             return '';
         });
 
+        // Returns first non-placeholder value; ignores "-", "--", "—", "N/A", "NA".
+        Handlebars.registerHelper('firstValid', function (...args: unknown[]) {
+            const values = args.slice(0, -1);
+            for (const value of values) {
+                if (value === undefined || value === null) {
+                    continue;
+                }
+                const text = String(value).trim();
+                if (text === '') {
+                    continue;
+                }
+                if (['-', '--', '—', 'n/a', 'na'].includes(text.toLowerCase())) {
+                    continue;
+                }
+                return value;
+            }
+            return '';
+        });
+
         // Concatenate values into a single string.
         Handlebars.registerHelper('concat', function (...args: unknown[]) {
             const values = args.slice(0, -1);
             return values.map(v => (v === undefined || v === null ? '' : String(v))).join('');
+        });
+
+        // Normalize guest prefixes for reservation templates.
+        Handlebars.registerHelper('guestPrefix', function (guest: unknown) {
+            if (!guest || typeof guest !== 'object' || Array.isArray(guest)) {
+                return 'Mr';
+            }
+
+            const g = guest as Record<string, unknown>;
+            const normalize = (value: unknown) => String(value ?? '').trim().toLowerCase();
+            const identityValues = [
+                normalize(g.title),
+                normalize(g.type),
+                normalize(g.passengerType),
+                normalize(g.guestType),
+            ];
+
+            if (identityValues.some(v => ['chd', 'child', 'infant', 'cnn'].includes(v))) {
+                return 'Chd';
+            }
+
+            if (identityValues.some(v => ['mrs', 'ms', 'miss', 'female'].includes(v))) {
+                return 'Mrs';
+            }
+
+            const gender = normalize(g.gender);
+            if (['f', 'female', 'woman'].includes(gender)) {
+                return 'Mrs';
+            }
+
+            return 'Mr';
         });
 
         // Current date helper: {{formatDate (now)}}

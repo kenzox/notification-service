@@ -32,21 +32,96 @@
                                 style="vertical-align: middle; margin-{{__meta.oppositeAlign}}: 8px;">
                             {{t "transferReservation.title"}}
                         </h3>
+                        <p style="margin: 0 0 12px; font-size: 13px; color: #666666;">
+                            {{t "transferReservation.passengerCount"}}: {{or totalGuestCount passengerCount "-"}} |
+                            {{t "transferReservation.date"}}: {{or (formatDate meetingDate) (formatDate date) (formatDate pickupDate) "-"}} |
+                            {{t "transferReservation.time"}}: {{or meetingTime time pickupTime "-"}} |
+                            {{t "transferReservation.meetingPoint"}}: {{or meetingPoint meetingLocation meetingPointName pickupLocation from "-"}}
+                        </p>
 
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 50%;">{{t "transferReservation.route"}}</th>
-                                    <th style="width: 30%;">{{t "transferReservation.vehicleType"}}</th>
+                                    <th style="width: 15%;">{{t "transferReservation.direction"}}</th>
+                                    <th style="width: 40%;">{{t "transferReservation.route"}}</th>
+                                    <th style="width: 25%;">{{t "transferReservation.vehicleType"}}</th>
                                     <th style="width: 20%;">{{t "transferReservation.duration"}}</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                {{#if transfers}}
+                                {{#each transfers}}
                                 <tr>
+                                    <td>
+                                        {{#if direction}}
+                                        {{#if (equalsIgnoreCase direction "departure")}}
+                                        {{t "flightTicket.departure"}}
+                                        {{else}}
+                                        {{#if (equalsIgnoreCase direction "return")}}
+                                        {{t "flightTicket.return"}}
+                                        {{else}}
+                                        {{direction}}
+                                        {{/if}}
+                                        {{/if}}
+                                        {{else}}
+                                        {{#if @first}}
+                                        {{t "flightTicket.departure"}}
+                                        {{else}}
+                                        {{t "flightTicket.return"}}
+                                        {{/if}}
+                                        {{/if}}
+                                    </td>
+                                    <td>{{or route (concat (or pickupLocation from "-") " → " (or dropoffLocation to "-"))}}</td>
+                                    <td>{{or vehicleType vehicle "-"}}</td>
+                                    <td>{{or duration transferDuration "-"}}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" style="font-size: 12px; color: #666666;">
+                                        {{t "transferReservation.date"}}: {{or (formatDate pickupDate) (formatDate date) (formatDate meetingDate) (formatDate transferDate) "-"}} |
+                                        {{t "transferReservation.time"}}: {{or pickupTime time meetingTime transferTime "-"}} |
+                                        {{t "transferReservation.meetingPoint"}}: {{or meetingPoint meetingLocation meetingPointName pickupLocation from "-"}} |
+                                        {{t "transferReservation.pickupLocation"}}: {{or pickupLocation from "-"}} |
+                                        {{t "transferReservation.dropoffLocation"}}: {{or dropoffLocation to "-"}} |
+                                        {{t "transferReservation.passengerCount"}}: {{or passengerCount paxCount totalGuestCount ../passengerCount ../totalGuestCount "-"}}
+                                    </td>
+                                </tr>
+                                {{/each}}
+                                {{else}}
+                                <tr>
+                                    <td>{{t "flightTicket.departure"}}</td>
                                     <td>{{or pickupLocation "-"}} &rarr; {{or dropoffLocation "-"}}</td>
                                     <td>{{or vehicleType "-"}}</td>
                                     <td>{{or duration "-"}}</td>
                                 </tr>
+                                <tr>
+                                    <td colspan="4" style="font-size: 12px; color: #666666;">
+                                        {{t "transferReservation.date"}}: {{or (formatDate date) (formatDate pickupDate) (formatDate meetingDate) (formatDate transferDate) "-"}} |
+                                        {{t "transferReservation.time"}}: {{or time pickupTime meetingTime transferTime "-"}} |
+                                        {{t "transferReservation.meetingPoint"}}: {{or meetingPoint meetingLocation meetingPointName pickupLocation "-"}} |
+                                        {{t "transferReservation.pickupLocation"}}: {{or pickupLocation "-"}} |
+                                        {{t "transferReservation.dropoffLocation"}}: {{or dropoffLocation "-"}} |
+                                        {{t "transferReservation.passengerCount"}}: {{or passengerCount totalGuestCount "-"}}
+                                    </td>
+                                </tr>
+                                {{#if (or returnPickupLocation returnDropoffLocation returnDate returnTime returnVehicleType returnDuration)}}
+                                <tr>
+                                    <td>{{t "flightTicket.return"}}</td>
+                                    <td>{{or returnPickupLocation pickupLocation "-"}} &rarr; {{or returnDropoffLocation dropoffLocation "-"}}</td>
+                                    <td>{{or returnVehicleType vehicleType "-"}}</td>
+                                    <td>{{or returnDuration duration "-"}}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" style="font-size: 12px; color: #666666;">
+                                        {{t "transferReservation.date"}}: {{or (formatDate returnDate) (formatDate returnMeetingDate) "-"}} |
+                                        {{t "transferReservation.time"}}: {{or returnTime returnMeetingTime "-"}} |
+                                        {{t "transferReservation.meetingPoint"}}: {{or returnMeetingPoint returnMeetingLocation returnMeetingPointName returnPickupLocation pickupLocation "-"}} |
+                                        {{t "transferReservation.pickupLocation"}}: {{or returnPickupLocation pickupLocation "-"}} |
+                                        {{t "transferReservation.dropoffLocation"}}: {{or returnDropoffLocation dropoffLocation "-"}} |
+                                        {{t "transferReservation.passengerCount"}}: {{or returnPassengerCount returnTotalGuestCount passengerCount totalGuestCount "-"}}
+                                    </td>
+                                </tr>
+                                {{/if}}
+                                {{/if}}
                             </tbody>
                         </table>
 
@@ -66,7 +141,7 @@
                                 <tr>
                                     <td>{{name}}</td>
                                     <td>{{surname}}</td>
-                                    <td>{{birthDate}}</td>
+                                    <td>{{formatDate birthDate}}</td>
                                     <td>{{nationality}}</td>
                                 </tr>
                                 {{/each}}
