@@ -263,6 +263,7 @@
   "reservationConfirmation": {
     "title": "Reservation Confirmation",
     "accommodationTitle": "Accommodation Confirmation",
+    "greeting": "Thanks {{guestName}}! Your reservation is confirmed.",
     "confirmed": "Your reservation has been successfully created. Details are below:",
     "reservationNumber": "Reservation No",
     "date": "Date",
@@ -351,7 +352,7 @@
   },
   "transferReservation": {
     "title": "Transfer Reservation",
-    "greeting": "Your transfer has been confirmed.",
+    "greeting": "Thanks {{guestName}}! Your transfer reservation is confirmed.",
     "confirmed": "Your transfer reservation has been confirmed.",
     "pickup": "PICKUP POINT",
     "dropoff": "DROP-OFF POINT",

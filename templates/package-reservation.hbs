@@ -20,9 +20,10 @@
 
 
                         <!-- Greeting -->
-                        <h2 style="margin: 0 0 16px;">
+                        <h2 style="margin: 0 0 10px;">
                             {{t "hotelReservation.greeting" guestName=(or customerName contactName rooms.[0].guestName rooms.[0].guests.[0].name rooms.[0].guests.[0].firstName "Guest") hotelCity=(or hotelName hotel.name hotelCity city destination)}}
                         </h2>
+                        <p style="margin: 0 0 22px; color: #333333; font-size: 14px;">{{t "flightTicket.successMessage"}}</p>
 
                         <!-- Booking Summary Notes -->
                         <div

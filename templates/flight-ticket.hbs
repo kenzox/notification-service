@@ -18,8 +18,8 @@
                 <tr>
                     <td>
 
-                        <!-- Title -->
-                        <h2 style="margin: 0 0 10px;">{{t "flightTicket.eTicketFlightDetails"}}</h2>
+                        <!-- Greeting -->
+                        <h2 style="margin: 0 0 10px;">{{t "flightTicket.greeting" guestName=(or customerName contactName cardHolder passengers.[0].name passengers.[0].firstName "Guest") flightCity=(or arrivalCity flights.[0].destinationCity flights.[0].arrivalCity destinationCity "-")}}</h2>
                         <p style="margin: 0 0 20px;">{{t "flightTicket.successMessage"}}</p>
 
                         <!-- PNR Summary -->

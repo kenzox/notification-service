@@ -178,6 +178,7 @@
   "reservationConfirmation": {
     "title": "تأكيد الحجز",
     "accommodationTitle": "Accommodation Confirmation",
+    "greeting": "شكراً {{guestName}}! تم تأكيد حجزك.",
     "confirmed": "تم إنشاء حجزك بنجاح. التفاصيل أدناه:",
     "reservationNumber": "رقم الحجز",
     "date": "التاريخ",
@@ -266,7 +267,7 @@
   },
   "transferReservation": {
     "title": "حجز النقل",
-    "greeting": "Your transfer has been confirmed.",
+    "greeting": "شكراً {{guestName}}! تم تأكيد حجز النقل الخاص بك.",
     "confirmed": "تم تأكيد حجز النقل الخاص بك.",
     "pickup": "نقطة الالتقاط",
     "dropoff": "نقطة الإنزال",

@@ -160,6 +160,11 @@ Tüm şablonlar `templates/partials/` altındaki ortak bileşenleri (header, foo
 Not:
 - `package-reservation.hbs`, `hotel-reservation.hbs` ile aynı ana iskeleti kullanır.
 - Paket şablonunda otel detaylarının üstünde ek olarak uçuş özeti ve (veri varsa) transfer özeti bulunur.
+- Reservation template ailesinde başlık standardı korunur:
+  - Kişiselleştirilmiş `greeting` başlığı (`Thanks/Teşekkürler ...`).
+  - Başlık altında standart başarı paragrafı (`Your reservation has been successfully completed.` / locale karşılığı).
+  - `reservation-confirmation` özet kartı arka planlı PNR benzeri görünüm kullanır.
+- Ortak footer adresi: `🌐 www.calibretour.com` (`templates/partials/footer.hbs`).
 
 ```
 templates/

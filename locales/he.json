@@ -178,6 +178,7 @@
   "reservationConfirmation": {
     "title": "אישור הזמנה",
     "accommodationTitle": "Accommodation Confirmation",
+    "greeting": "תודה {{guestName}}! ההזמנה שלך אושרה.",
     "confirmed": "ההזמנה שלך נוצרה בהצלחה. הפרטים להלן:",
     "reservationNumber": "מספר הזמנה",
     "date": "תאריך",
@@ -266,7 +267,7 @@
   },
   "transferReservation": {
     "title": "הזמנת העברה",
-    "greeting": "Your transfer has been confirmed.",
+    "greeting": "תודה {{guestName}}! הזמנת ההעברה שלך אושרה.",
     "confirmed": "הזמנת ההעברה שלך אושרה.",
     "pickup": "נקודת איסוף",
     "dropoff": "נקודת הורדה",

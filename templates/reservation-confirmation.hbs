@@ -17,40 +17,46 @@
             <table width="600" cellpadding="0" cellspacing="0" class="main-card">
                 <tr>
                     <td>
-                        <h2 style="margin: 0 0 10px; color: #000000;">{{t "reservationConfirmation.title"}}</h2>
+                        <h2 style="margin: 0 0 10px; color: #000000;">{{t "reservationConfirmation.greeting" guestName=(or customerName contactName cardHolder passengers.[0].name passengers.[0].firstName "Guest")}}</h2>
                         <p style="margin: 0 0 22px; color: #333333; font-size: 14px;">{{t "reservationConfirmation.confirmed"}}</p>
 
-                        <!-- Reservation Info Strip -->
+                        <!-- Reservation Info Summary -->
                         <table width="100%" cellpadding="0" cellspacing="0"
-                            style="margin-bottom: 24px; border-bottom: 1px solid #EEEEEE; padding-bottom: 16px;">
+                            style="margin: 0 0 24px; border: 1px solid #E0E0E0; border-radius: 8px; background-color: #F9F9F9;">
                             <tr>
-                                <td valign="top" style="width: 25%; padding-right: 10px;">
-                                    <p
-                                        style="margin: 0 0 5px; font-size: 11px; font-weight: 700; color: #000000; text-transform: uppercase;">
-                                        {{t "reservationConfirmation.reservationNumber"}}</p>
-                                    <p style="margin: 0; font-size: 13px; color: #666666;">{{or reservationNumber bookingId "-"}}</p>
-                                </td>
-                                <td valign="top" style="width: 25%; padding-right: 10px;">
-                                    <p
-                                        style="margin: 0 0 5px; font-size: 11px; font-weight: 700; color: #000000; text-transform: uppercase;">
-                                        {{t "common.status"}}</p>
-                                    <p style="margin: 0; font-size: 13px; color: #FF6200; font-weight: 600;">
-                                        {{or status (t "reservationConfirmation.statusConfirmed")}}
-                                    </p>
-                                </td>
-                                <td valign="top" style="width: 25%; padding-right: 10px;">
-                                    <p
-                                        style="margin: 0 0 5px; font-size: 11px; font-weight: 700; color: #000000; text-transform: uppercase;">
-                                        {{t "common.reservationDate"}}</p>
-                                    <p style="margin: 0; font-size: 13px; color: #666666;">{{formatDate (or reservationDate bookingDate)}}</p>
-                                </td>
-                                <td valign="top" style="width: 25%;">
-                                    <p
-                                        style="margin: 0 0 5px; font-size: 11px; font-weight: 700; color: #000000; text-transform: uppercase;">
-                                        {{t "common.totalPrice"}}</p>
-                                    <p style="margin: 0; font-size: 13px; color: #000000; font-weight: 700;">
-                                        {{formatCurrency (or totalAmount 0) (or currency "TRY")}}
-                                    </p>
+                                <td style="padding: 14px 16px;">
+                                    <table width="100%" cellpadding="0" cellspacing="0">
+                                        <tr>
+                                            <td valign="top" width="25%" style="padding: 0 10px 0 0;">
+                                                <p
+                                                    style="margin: 0 0 5px; font-size: 11px; font-weight: 700; color: #999999; text-transform: uppercase;">
+                                                    {{t "reservationConfirmation.reservationNumber"}}</p>
+                                                <p style="margin: 0; font-size: 13px; color: #333333; font-weight: 600;">{{or reservationNumber bookingId "-"}}</p>
+                                            </td>
+                                            <td valign="top" width="25%" style="padding: 0 10px;">
+                                                <p
+                                                    style="margin: 0 0 5px; font-size: 11px; font-weight: 700; color: #999999; text-transform: uppercase;">
+                                                    {{t "common.status"}}</p>
+                                                <p style="margin: 0; font-size: 13px; color: #FF6200; font-weight: 600;">
+                                                    {{or status (t "reservationConfirmation.statusConfirmed")}}
+                                                </p>
+                                            </td>
+                                            <td valign="top" width="25%" style="padding: 0 10px;">
+                                                <p
+                                                    style="margin: 0 0 5px; font-size: 11px; font-weight: 700; color: #999999; text-transform: uppercase;">
+                                                    {{t "common.reservationDate"}}</p>
+                                                <p style="margin: 0; font-size: 13px; color: #333333; font-weight: 600;">{{formatDate (or reservationDate bookingDate)}}</p>
+                                            </td>
+                                            <td valign="top" width="25%" style="padding: 0 0 0 10px;">
+                                                <p
+                                                    style="margin: 0 0 5px; font-size: 11px; font-weight: 700; color: #999999; text-transform: uppercase;">
+                                                    {{t "common.totalPrice"}}</p>
+                                                <p style="margin: 0; font-size: 13px; color: #333333; font-weight: 700;">
+                                                    {{formatCurrency (or totalAmount 0) (or currency "TRY")}}
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </td>
                             </tr>
                         </table>

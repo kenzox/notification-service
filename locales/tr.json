@@ -221,6 +221,7 @@
   "reservationConfirmation": {
     "title": "Rezervasyon Onayı",
     "accommodationTitle": "Konaklama Onayı",
+    "greeting": "Teşekkürler {{guestName}}! Rezervasyonunuz onaylandı.",
     "confirmed": "Rezervasyonunuz başarıyla oluşturulmuştur. Detaylar aşağıda yer almaktadır:",
     "reservationNumber": "Rezervasyon No",
     "date": "Tarih",
@@ -309,7 +310,7 @@
   },
   "transferReservation": {
     "title": "Transfer Rezervasyonu",
-    "greeting": "Transfer rezervasyonunuz onaylandı.",
+    "greeting": "Teşekkürler {{guestName}}! Transfer rezervasyonunuz onaylandı.",
     "confirmed": "Transfer rezervasyonunuz onaylanmıştır.",
     "pickup": "ALIŞ NOKTASI",
     "dropoff": "BIRAKILACAK",
